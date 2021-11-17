@@ -48,12 +48,12 @@ public class AVLTree {
    public int insert(int k, String i) {
    		if (empty()){
    			this.root = new AVLNode(k, i, null);
+			   this.size++;
    			return 0;
 	    }
    		IAVLNode curr = this.root;
    		while ((k < curr.getKey() && curr.getLeft().isRealNode()) ||
-			   (k > curr.getKey() && curr.getRight().isRealNode()) ||
-			   (k != curr.getKey())){
+			   (k > curr.getKey() && curr.getRight().isRealNode())){
    			if (k < curr.getKey()){
 				curr = curr.getLeft();
 			}
