@@ -11,10 +11,22 @@ public class Tester {
         T1.insert(9, "snir");
         T1.insert(4, "idoamit");
 
-        System.out.println(T1.max());
-        System.out.println(T1.min());
-        System.out.println(T1.keysToArray());
-        System.out.println(T1.infoToArray());
+        if(!(T1.max() == "snir")){
+            System.out.println("Error in max() \n" +
+                    "prints: " + T1.max() +" should print: snir");
+
+        }
+        if(!(T1.min() == "a")){
+            System.out.println("Error in min() \n" +
+                    "prints: " + T1.min() +" should print: a");
+        }
+        if(!(T1.keysToArray() == new int[] {1,2,4,6,7,8,9})){
+            System.out.println("Error in keysToArray");
+        }
+        if(!(T1.infoToArray() == new String[] {"a", "b", "idoamit", "elai", "sapir", "ido", "snir"})){
+            System.out.println("Error in infosToArray");
+        }
+
 
 
 
