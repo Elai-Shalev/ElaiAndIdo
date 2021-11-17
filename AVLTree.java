@@ -100,8 +100,8 @@ public class AVLTree {
    */
   public int[] keysToArray()
   {
-
-        return new int[33]; // to be replaced by student code
+	  //int[] keys = new int[Math.Power(2,getRoot().getHeight())]
+      return new int[33]; // to be replaced by student code
   }
 
   /**
@@ -187,7 +187,7 @@ public class AVLTree {
 	 *
 	 *  Rebalances Tree
 	 */
-	public IAVLNode rebalance(){ return null;}
+	public int rebalance(){ return 0;}
 
 	/** 
 	 * public interface IAVLNode
