@@ -119,7 +119,8 @@ public class AVLTree {
 			return;
 		}
 		inOrderKeys(node.getLeft(), keys, index);
-		keys[index++] = node.getKey();
+		keys[index] = node.getKey();
+		index++;
 		inOrderKeys(node.getRight(), keys, index);
 	}
 
@@ -143,7 +144,8 @@ public class AVLTree {
 			return;
 		}
 		inOrderVals(node.getLeft(), values, index);
-		values[index++] = node.getValue();
+		values[index] = node.getValue();
+		index++;
 		inOrderVals(node.getRight(), values, index);
 	}
 
