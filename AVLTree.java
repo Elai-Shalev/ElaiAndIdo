@@ -19,10 +19,7 @@ public class AVLTree {
    *
    */
   public boolean empty() {
-	  if(this.root != null){
-		  return true;
-	  }
-	  return false;
+	  return this.root != null;
   }
 
  /**
@@ -48,7 +45,7 @@ public class AVLTree {
    public int insert(int k, String i) {
    		if (empty()){
    			this.root = new AVLNode(k, i, null);
-			   this.size++;
+			this.size++;
    			return 0;
 	    }
    		IAVLNode curr = this.root;
@@ -71,7 +68,7 @@ public class AVLTree {
 		}
 
 	    if (k > curr.getKey()){
-		   curr.setRight(new AVLNode(k, i, curr));
+		    curr.setRight(new AVLNode(k, i, curr));
 	    }
 
 	    this.size++;
