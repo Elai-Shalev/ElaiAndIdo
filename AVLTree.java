@@ -8,6 +8,7 @@
  */
 
 public class AVLTree {
+	private final ExternalLeaf virtualNode = new ExternalLeaf();
 
   /**
    * public boolean empty()
@@ -177,51 +178,73 @@ public class AVLTree {
     * This class can and MUST be modified (It must implement IAVLNode).
     */
   public class AVLNode implements IAVLNode{
+  		private int key;
+  		private String info;
+  		private IAVLNode left;
+  		private IAVLNode right;
+  		private IAVLNode parent;
+  		private int height;
+
+  		public AVLNode(int key, String info, IAVLNode parent){
+			this.key = key;
+			this.info = info;
+			this.parent = parent;
+			this.height = 0;
+			this.left = AVLTree.this.virtualNode;
+			this.right = AVLTree.this.virtualNode;
+		}
+
 		public int getKey()
 		{
-			return 423; // to be replaced by student code
+			return this.key;
 		}
 		public String getValue()
 		{
-			return "getValueDefault"; // to be replaced by student code
+			return this.info;
 		}
 		public void setLeft(IAVLNode node)
 		{
-			return; // to be replaced by student code
+			this.left = node;
 		}
 		public IAVLNode getLeft()
 		{
-			return null; // to be replaced by student code
+			return this.left;
 		}
 		public void setRight(IAVLNode node)
 		{
-			return; // to be replaced by student code
+			this.right = node;
 		}
 		public IAVLNode getRight()
 		{
-			return null; // to be replaced by student code
+			return this.right;
 		}
 		public void setParent(IAVLNode node)
 		{
-			return; // to be replaced by student code
+			this.parent = node;
 		}
 		public IAVLNode getParent()
 		{
-			return null; // to be replaced by student code
+			return this.parent;
 		}
 		public boolean isRealNode()
 		{
-			return true; // to be replaced by student code
+			return this.height > -1;
 		}
 	    public void setHeight(int height)
 	    {
-	      return; // to be replaced by student code
+	      	this.height = height;
 	    }
 	    public int getHeight()
 	    {
-	      return 424; // to be replaced by student code
+	     	return this.height;
 	    }
   }
 
+  public class ExternalLeaf extends AVLNode{
+  		public ExternalLeaf(){
+  			super(-1, null, null);
+  			this.setHeight(-1);
+		}
+  }
 }
   
