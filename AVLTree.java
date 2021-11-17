@@ -10,6 +10,7 @@
 public class AVLTree {
 	private final ExternalLeaf virtualNode = new ExternalLeaf();
 	private IAVLNode root;
+	private int size = 0;
 
   /**
    * public boolean empty()
@@ -117,11 +118,11 @@ public class AVLTree {
     */
    public String max()
    {
-	   if(empty()){
+	   if(this.empty()){
 		   return null;
 	   }
 	   IAVLNode curr = this.root;
-	   while(curr.getRight() != null){
+	   while(curr.getRight().isRealNode()){
 		   curr = curr.getRight();
 	   }
 	   return curr.getValue();
@@ -133,11 +134,23 @@ public class AVLTree {
    * Returns a sorted array which contains all keys in the tree,
    * or an empty array if the tree is empty.
    */
-  public int[] keysToArray()
-  {
-	  //int[] keys = new int[Math.Power(2,getRoot().getHeight())]
-      return new int[33]; // to be replaced by student code
+  public int[] keysToArray(){
+
+	  int[] keys = new int[size];
+	  int index =0;
+	  inOrderKeys(this.root, keys,index);
+	  return keys;
+
   }
+  	public static void inOrderKeys (IAVLNode node, int [] keys, int index){
+		if (!node.isRealNode()) {
+			return;
+		}
+		inOrderKeys(node.getLeft(), keys, index);
+		keys[index++] = node.getKey();
+		inOrderKeys(node.getRight(), keys, index);
+	}
+
 
   /**
    * public String[] infoToArray()
@@ -148,8 +161,19 @@ public class AVLTree {
    */
   public String[] infoToArray()
   {
-        return new String[55]; // to be replaced by student code
+	  String[] values = new String[size];
+	  int index =0;
+	  inOrderVals(this.root, values ,index);
+	  return values;
   }
+	public static void inOrderVals (IAVLNode node, String [] values, int index){
+		if (!node.isRealNode()) {
+			return;
+		}
+		inOrderVals(node.getLeft(), values, index);
+		values[index++] = node.getValue();
+		inOrderVals(node.getRight(), values, index);
+	}
 
    /**
     * public int size()
