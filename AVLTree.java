@@ -45,7 +45,35 @@ public class AVLTree {
    * Returns -1 if an item with key k already exists in the tree.
    */
    public int insert(int k, String i) {
-	  return 420;	// to be replaced by student code
+   		if (empty()){
+   			this.root = new AVLNode(k, i, null);
+   			return 0;
+	    }
+   		IAVLNode curr = this.root;
+   		while ((k < curr.getKey() && curr.getLeft().isRealNode()) ||
+			   (k > curr.getKey() && curr.getRight().isRealNode()) ||
+			   (k != curr.getKey())){
+   			if (k < curr.getKey()){
+				curr = curr.getLeft();
+			}
+   			else{
+   				curr = curr.getRight();
+			}
+		}
+
+	    if (k == curr.getKey()){
+		    return -1;
+	    }
+
+	    if (k < curr.getKey()){
+			curr.setLeft(new AVLNode(k, i, curr));
+		}
+
+	    if (k > curr.getKey()){
+		   curr.setRight(new AVLNode(k, i, curr));
+	    }
+
+	    return this.rebalance(curr);
    }
 
   /**
@@ -70,7 +98,7 @@ public class AVLTree {
     */
    public String min()
    {
-	   if (this.root == null){
+	   if (empty()){
 	   		return null;
 	   }
    	   IAVLNode x = this.root;
@@ -180,21 +208,21 @@ public class AVLTree {
 	 *
 	 *  Rotates Node Left
 	 */
-	public IAVLNode rotateLeft(){ return null;}
+	public IAVLNode rotateLeft(IAVLNode node){ return null;}
 
 	/**
 	 *  public IAVLNode rotateLeft
 	 *
 	 *  Rotates Node Right
 	 */
-	public IAVLNode rotateRight(){ return null;}
+	public IAVLNode rotateRight(IAVLNode node){ return null;}
 
 	/**
 	 *  public IAVLNode rotateLeft
 	 *
 	 *  Rebalances Tree
 	 */
-	public int rebalance(){ return 0;}
+	public int rebalance(IAVLNode node){ return 0;}
 
 	/** 
 	 * public interface IAVLNode
