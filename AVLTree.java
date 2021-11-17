@@ -74,6 +74,7 @@ public class AVLTree {
 		   curr.setRight(new AVLNode(k, i, curr));
 	    }
 
+	    this.size++;
 	    return this.rebalance(curr);
    }
 
