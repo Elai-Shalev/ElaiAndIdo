@@ -9,6 +9,7 @@
 
 public class AVLTree {
 	private final ExternalLeaf virtualNode = new ExternalLeaf();
+	private IAVLNode root;
 
   /**
    * public boolean empty()
@@ -17,7 +18,10 @@ public class AVLTree {
    *
    */
   public boolean empty() {
-    return false; // to be replaced by student code
+	  if(this.root != null){
+		  return true;
+	  }
+	  return false;
   }
 
  /**
@@ -74,10 +78,18 @@ public class AVLTree {
     *
     * Returns the info of the item with the largest key in the tree,
     * or null if the tree is empty.
+	* Time Complexity: O(log(n)) with n being No. of nodes in Tree.
     */
    public String max()
    {
-	   return "maxDefaultString"; // to be replaced by student code
+	   if(empty()){
+		   return null;
+	   }
+	   IAVLNode curr = this.root;
+	   while(curr.getRight() != null){
+		   curr = curr.getRight();
+	   }
+	   return curr.getValue();
    }
 
   /**
@@ -88,6 +100,7 @@ public class AVLTree {
    */
   public int[] keysToArray()
   {
+
         return new int[33]; // to be replaced by student code
   }
 
@@ -117,10 +130,14 @@ public class AVLTree {
     * public int getRoot()
     *
     * Returns the root AVL node, or null if the tree is empty
+	* TC: O(1)
     */
    public IAVLNode getRoot()
    {
-	   return null;
+	   if(empty()){
+		   return null;
+	   }
+	   return this.root;
    }
    
    /**
