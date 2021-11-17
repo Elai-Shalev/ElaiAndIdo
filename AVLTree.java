@@ -19,7 +19,7 @@ public class AVLTree {
    *
    */
   public boolean empty() {
-	  return this.root != null;
+	  return this.root == null;
   }
 
  /**
