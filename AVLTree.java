@@ -86,7 +86,17 @@ public class AVLTree {
    */
    public int delete(int k)
    {
+	   if(empty()){
+		   return 0;
+	   }
+	   //is leaf
+	   IAVLNode curr = this.root;
+	   while(curr.isRealNode()){
 
+
+	   }
+
+	   //int heightDiff = root.heightDiff();
 
 	   return 421;	// to be replaced by student code
    }
@@ -184,7 +194,7 @@ public class AVLTree {
     */
    public int size()
    {
-	   return 422; // to be replaced by student code
+	   return this.size;
    }
    
    /**
