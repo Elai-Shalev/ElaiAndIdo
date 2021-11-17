@@ -151,6 +151,27 @@ public class AVLTree {
 	   return -1;
    }
 
+	/**
+	 *  public IAVLNode rotateLeft
+	 *
+	 *  Rotates Node Left
+	 */
+	public IAVLNode rotateLeft(){ return null;}
+
+	/**
+	 *  public IAVLNode rotateLeft
+	 *
+	 *  Rotates Node Right
+	 */
+	public IAVLNode rotateRight(){ return null;}
+
+	/**
+	 *  public IAVLNode rotateLeft
+	 *
+	 *  Rebalances Tree
+	 */
+	public IAVLNode rebalance(){ return null;}
+
 	/** 
 	 * public interface IAVLNode
 	 * ! Do not delete or modify this - otherwise all tests will fail !
@@ -238,9 +259,20 @@ public class AVLTree {
 	    {
 	     	return this.height;
 	    }
+	    public int heightDiff(){
+  			return this.right.getHeight() - this.left.getHeight();
+		}
+		public void updateHeight(){
+  			this.setHeight(Math.max(this.left.getHeight(), this.right.getHeight()) + 1);
+		}
   }
 
-  public class ExternalLeaf extends AVLNode{
+	/**
+	 *  public class ExternalLeaf
+	 *
+	 *  This class extends AVLNode and represents a Virtual Node, with height -1
+	 */
+	public class ExternalLeaf extends AVLNode{
   		public ExternalLeaf(){
   			super(-1, null, null);
   			this.setHeight(-1);
