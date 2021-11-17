@@ -71,7 +71,14 @@ public class AVLTree {
     */
    public String min()
    {
-	   return "minDefaultString"; // to be replaced by student code
+	   if (this.root == null){
+	   		return null;
+	   }
+   	   IAVLNode x = this.root;
+	   while (x.getLeft().isRealNode()){
+	   		x = x.getLeft();
+	   }
+	   return x.getValue();
    }
 
    /**
