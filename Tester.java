@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Tester {
 
     public static void main(String [] args){
@@ -13,8 +15,12 @@ public class Tester {
 
         System.out.println(T1.max());
         System.out.println(T1.min());
-        System.out.println(T1.keysToArray());
-        System.out.println(T1.infoToArray());
+        System.out.println(T1.search(7));
+        System.out.println(T1.search(6));
+        System.out.println(T1.search(19));
+        System.out.println(T1.size());
+        System.out.println(Arrays.toString(T1.keysToArray()));
+        System.out.println(Arrays.toString(T1.infoToArray()));
 
 
 

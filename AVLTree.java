@@ -30,7 +30,19 @@ public class AVLTree {
    */
   public String search(int k)
   {
-	return "searchDefaultString";  // to be replaced by student code
+		IAVLNode curr = this.root;
+		while (curr.isRealNode()){
+			if (k == curr.getKey()){
+				return curr.getValue();
+			}
+			else if (k < curr.getKey()){
+				curr = curr.getLeft();
+			}
+			else {
+				curr = curr.getRight();
+			}
+		}
+		return null;
   }
 
   /**
@@ -137,18 +149,18 @@ public class AVLTree {
   public int[] keysToArray(){
 
 	  int[] keys = new int[size];
-	  int index =0;
+	  int[] index = new int[]{0};
 	  inOrderKeys(this.root, keys,index);
 	  return keys;
 
   }
-  	public static void inOrderKeys (IAVLNode node, int [] keys, int index){
+  	public static void inOrderKeys (IAVLNode node, int [] keys, int[] index){
 		if (!node.isRealNode()) {
 			return;
 		}
 		inOrderKeys(node.getLeft(), keys, index);
-		keys[index] = node.getKey();
-		index++;
+		keys[index[0]] = node.getKey();
+		index[0]++;
 		inOrderKeys(node.getRight(), keys, index);
 	}
 
@@ -163,17 +175,17 @@ public class AVLTree {
   public String[] infoToArray()
   {
 	  String[] values = new String[size];
-	  int index =0;
+	  int[] index = new int[]{0};
 	  inOrderVals(this.root, values ,index);
 	  return values;
   }
-	public static void inOrderVals (IAVLNode node, String [] values, int index){
+	public static void inOrderVals (IAVLNode node, String [] values, int[] index){
 		if (!node.isRealNode()) {
 			return;
 		}
 		inOrderVals(node.getLeft(), values, index);
-		values[index] = node.getValue();
-		index++;
+		values[index[0]] = node.getValue();
+		index[0]++;
 		inOrderVals(node.getRight(), values, index);
 	}
 
@@ -184,7 +196,7 @@ public class AVLTree {
     */
    public int size()
    {
-	   return 422; // to be replaced by student code
+	   return this.size;
    }
    
    /**
