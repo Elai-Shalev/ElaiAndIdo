@@ -9,8 +9,28 @@
 
 public class AVLTree {
 	private final ExternalLeaf virtualNode = new ExternalLeaf();
-	private IAVLNode root;
+	public IAVLNode root;
 	private int size = 0;
+
+	public void printArray(int[] arr){
+		for (int item :
+				arr) {
+			System.out.println(item);
+		}
+	}
+	public boolean isEqualkeys(int[] keys){
+		if(this.size!=keys.length){
+			return false;
+		}
+		int [] them_keys = this.keysToArray();
+		for(int i=0; i<this.size; i++){
+			if(them_keys[i]!=keys[i]){
+				return false;
+			}
+		}
+		return true;
+
+	}
 
   /**
    * public boolean empty()
@@ -239,19 +259,42 @@ public class AVLTree {
 	   return -1;
    }
 
+
+	/** isEqual
+	 *
+	 *
+	 *
+	 *
+	 */
+
+
 	/**
 	 *  public IAVLNode rotateLeft
 	 *
 	 *  Rotates Node Left
 	 */
-	public IAVLNode rotateLeft(IAVLNode node){ return null;}
+	public IAVLNode rotateLeft(IAVLNode node){
+
+		IAVLNode new_mid = node.getRight();
+		node.setRight(new_mid.getLeft());
+		new_mid.setLeft(node);
+		//maybe implement a 'height' field? - Elai
+		return new_mid;
+
+	}
 
 	/**
 	 *  public IAVLNode rotateLeft
 	 *
 	 *  Rotates Node Right
 	 */
-	public IAVLNode rotateRight(IAVLNode node){ return null;}
+	public IAVLNode rotateRight(IAVLNode node) {
+		IAVLNode new_mid = node.getLeft();
+		node.setLeft(new_mid.getRight());
+		new_mid.setRight(node);
+		//maybe implement a 'height' field? - Elai
+		return new_mid;
+	}
 
 	/**
 	 *  public IAVLNode rotateLeft

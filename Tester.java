@@ -11,6 +11,8 @@ public class Tester {
         T1.insert(9, "snir");
         T1.insert(4, "idoamit");
 
+
+
         if(!(T1.max() == "snir")){
             System.out.println("Error in max() \n" +
                     "prints: " + T1.max() +" should print: snir");
@@ -20,12 +22,21 @@ public class Tester {
             System.out.println("Error in min() \n" +
                     "prints: " + T1.min() +" should print: a");
         }
-        if(!(T1.keysToArray() == new int[] {1,2,4,6,7,8,9})){
+        System.out.println(T1.getRoot().getValue());
+        //T1.root = T1.rotateLeft(T1.getRoot());
+        System.out.println(T1.getRoot().getValue());
+
+
+
+        T1.printArray(T1.keysToArray());
+        if(!(T1.isEqualkeys(new int[] {1,2,4,6,7,8,9}))){
             System.out.println("Error in keysToArray");
         }
         if(!(T1.infoToArray() == new String[] {"a", "b", "idoamit", "elai", "sapir", "ido", "snir"})){
             System.out.println("Error in infosToArray");
         }
+
+
 
 
 
