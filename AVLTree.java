@@ -124,8 +124,8 @@ public class AVLTree {
 	   int [] changes = new int[1];
 	   this.root = deleteRec(k, root, changes);
 
-	   updateHeight(node);
-	   this.rebalance(node);
+	   //updateHeight(node);
+	   //this.rebalance(node);
 
 
 	   return 421;	// to be replaced by student code
@@ -142,18 +142,18 @@ public class AVLTree {
 
 	   //is leaf
 	   else if (!curr.getLeft().isRealNode() && !curr.getRight().isRealNode()) {
-		   ExternalLeaf ex = new ExternalLeaf();
-		   curr = ex;
+		   curr = AVLTree.this.virtualNode;
 	   }
 
 	   //two children
-	   else if(curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
+	   else if (curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
 
 		   IAVLNode succ = Successor(curr.getRight());
 		   int succkey = succ.getKey();
 
-		   curr.setRight(deleteRec(succkey, this.getRoot(),changes));
+		   curr.setRight(deleteRec(succkey, this.getRoot(), changes));
 	   }
+
 
 	   //one child
 	   else if (!curr.getLeft().isRealNode()) {
@@ -168,9 +168,10 @@ public class AVLTree {
 
 
 
+
 		   //int heightDiff = root.heightDiff();
 
-	   return 0;
+	   return curr;
 	   }
 
 
@@ -370,6 +371,7 @@ public class AVLTree {
 		new_mid.setLeft(node);
 		updateHeight(node);
 		updateHeight(new_mid);
+
 
 		return new_mid;
 
