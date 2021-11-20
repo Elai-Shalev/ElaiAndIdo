@@ -126,7 +126,8 @@ public class AVLTree {
 		}
 		//two children
 		else if (curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
-			succ = Successor(curr.getRight());
+			//succ = Successor(curr.getRight());
+			succ =  Successor(curr);
 			if (succ.getRight().isRealNode()) {
 				succ.getParent().setLeft(succ.getRight());
 				succ.getRight().setParent(succ.getParent());
@@ -151,9 +152,9 @@ public class AVLTree {
 	}
 
    public IAVLNode Successor(IAVLNode node) {
-	   if(!node.getRight().isRealNode()){
+	   if(node.getRight().isRealNode()){
 		   //minimumleaf
-		   IAVLNode curr = node;
+		   IAVLNode curr = node.getRight();
 		   while (curr.getLeft().isRealNode()) {
 			   curr = curr.getLeft();
 		   }
