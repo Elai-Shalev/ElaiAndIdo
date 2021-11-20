@@ -141,11 +141,12 @@ public class AVLTree {
 
 		//one child
 		else if (!curr.getLeft().isRealNode()) {
-			curr = curr.getRight();
-		} else if (!curr.getRight().isRealNode()) {
-			curr = curr.getLeft();
+			curr.getRight().setParent(curr.getParent());
+			curr.getParent().setRight(curr.getRight());
+		} else  {
+			curr.getLeft().setParent(curr.getParent());
+			curr.getParent().setLeft(curr.getLeft());
 		}
-
 		return rebalance(succ);
 	}
 

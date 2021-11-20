@@ -26,7 +26,7 @@ public class Tester {
         }
 
         AVLTree.print2DUtil(T1.root, 0);
-        T1.delete(2);
+        T1.delete(6);
         //T1.root = T1.rotateLeft(T1.getRoot());
         System.out.println("____________");
         AVLTree.print2DUtil(T1.root, 0);
