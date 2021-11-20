@@ -9,8 +9,28 @@
 
 public class AVLTree {
 	private final ExternalLeaf virtualNode = new ExternalLeaf();
-	private IAVLNode root;
+	public IAVLNode root;
 	private int size = 0;
+
+	public void printArray(int[] arr){
+		for (int item :
+				arr) {
+			System.out.println(item);
+		}
+	}
+	public boolean isEqualkeys(int[] keys){
+		if(this.size!=keys.length){
+			return false;
+		}
+		int [] them_keys = this.keysToArray();
+		for(int i=0; i<this.size; i++){
+			if(them_keys[i]!=keys[i]){
+				return false;
+			}
+		}
+		return true;
+
+	}
 
   /**
    * public boolean empty()
@@ -101,17 +121,80 @@ public class AVLTree {
 	   if(empty()){
 		   return 0;
 	   }
-	   //is leaf
-	   IAVLNode curr = this.root;
-	   while(curr.isRealNode()){
+	   int [] changes = new int[1];
+	   this.root = deleteRec(k, root, changes);
 
+	   updateHeight(node);
+	   this.rebalance(node);
 
-	   }
-
-	   //int heightDiff = root.heightDiff();
 
 	   return 421;	// to be replaced by student code
    }
+
+   public IAVLNode deleteRec(int k, IAVLNode curr, int [] changes) {
+
+	   if (k < curr.getKey()) {
+		   curr.setLeft(deleteRec(k, curr.getLeft(), changes));
+	   } else if (k > curr.getKey()) {
+		   curr.setRight(deleteRec(k, curr.getRight(), changes));
+	   }
+	   //now k is curr key
+
+	   //is leaf
+	   else if (!curr.getLeft().isRealNode() && !curr.getRight().isRealNode()) {
+		   ExternalLeaf ex = new ExternalLeaf();
+		   curr = ex;
+	   }
+
+	   //two children
+	   else if(curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
+
+		   IAVLNode succ = Successor(curr.getRight());
+		   int succkey = succ.getKey();
+
+		   curr.setRight(deleteRec(succkey, this.getRoot(),changes));
+	   }
+
+	   //one child
+	   else if (!curr.getLeft().isRealNode()) {
+		   curr = curr.getRight();
+	   } else if (!curr.getRight().isRealNode()) {
+		   curr = curr.getLeft();
+	   }
+
+
+
+
+
+
+
+		   //int heightDiff = root.heightDiff();
+
+	   return 0;
+	   }
+
+
+
+   public IAVLNode Successor(IAVLNode node) {
+	   if(!node.getRight().isRealNode()){
+		   //minimumleaf
+		   IAVLNode curr = node;
+		   while (curr.getLeft().isRealNode()) {
+			   curr = curr.getLeft();
+		   }
+		   return curr;
+	   }
+	   IAVLNode succ = node.getParent();
+	   while(succ.isRealNode() && succ.getRight() == node){
+		   node = succ;
+		   succ = succ.getParent();
+	   }
+	   return succ;
+   }
+
+
+
+
 
    /**
     * public String min()
@@ -174,6 +257,11 @@ public class AVLTree {
 		inOrderKeys(node.getRight(), keys, index);
 	}
 
+	private void updateHeight(IAVLNode node) {
+		int leftHeight = node.getLeft().getHeight();
+		int rightHeight = node.getRight().getHeight();
+		node.setHeight(Math.max(leftHeight, rightHeight) + 1);
+	}
 
   /**
    * public String[] infoToArray()
@@ -251,19 +339,56 @@ public class AVLTree {
 	   return -1;
    }
 
+   /**
+	* updates the rooted_size field upwards in every node changed -
+	* to usa after insert, delete and rebalance
+    */
+   public void Update(IAVLNode node){
+
+   }
+
+
+	/** isEqual
+	 *
+	 *
+	 *
+	 *
+	 */
+
+
 	/**
 	 *  public IAVLNode rotateLeft
 	 *
 	 *  Rotates Node Left
 	 */
-	public IAVLNode rotateLeft(IAVLNode node){ return null;}
+	public IAVLNode rotateLeft(IAVLNode node){
+
+		if(!node.isRealNode()){ return node;}
+
+		IAVLNode new_mid = node.getRight();
+		node.setRight(new_mid.getLeft());
+		new_mid.setLeft(node);
+		updateHeight(node);
+		updateHeight(new_mid);
+
+		return new_mid;
+
+	}
 
 	/**
 	 *  public IAVLNode rotateLeft
 	 *
 	 *  Rotates Node Right
 	 */
-	public IAVLNode rotateRight(IAVLNode node){ return null;}
+	public IAVLNode rotateRight(IAVLNode node) {
+		IAVLNode new_mid = node.getLeft();
+		node.setLeft(new_mid.getRight());
+		new_mid.setRight(node);
+		updateHeight(node);
+		updateHeight(new_mid);
+
+		return new_mid;
+	}
 
 	/**
 	 *  public IAVLNode rotateLeft
@@ -305,6 +430,7 @@ public class AVLTree {
   		private IAVLNode right;
   		private IAVLNode parent;
   		private int height;
+		private int rooted_size;
 
   		public AVLNode(int key, String info, IAVLNode parent){
 			this.key = key;
@@ -313,6 +439,7 @@ public class AVLTree {
 			this.height = 0;
 			this.left = AVLTree.this.virtualNode;
 			this.right = AVLTree.this.virtualNode;
+			this.rooted_size = 0;
 		}
 
 		public int getKey()
@@ -323,6 +450,7 @@ public class AVLTree {
 		{
 			return this.info;
 		}
+		public void setKey(int key) {this.key = key;}
 		public void setLeft(IAVLNode node)
 		{
 			this.left = node;
@@ -365,6 +493,7 @@ public class AVLTree {
 		public void updateHeight(){
   			this.setHeight(Math.max(this.left.getHeight(), this.right.getHeight()) + 1);
 		}
+		public int getRooted_size(){ return this.rooted_size;}
   }
 
 	/**
