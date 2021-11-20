@@ -13,8 +13,6 @@ public class Tester {
         T1.insert(9, "snir");
         T1.insert(4, "idoamit");
 
-
-
         if(!(T1.max() == "snir")){
             System.out.println("Error in max() \n" +
                     "prints: " + T1.max() +" should print: snir");
@@ -26,17 +24,12 @@ public class Tester {
         }
 
         AVLTree.print2DUtil(T1.root, 0);
+        System.out.println(Arrays.toString(T1.keysToArray()));
         T1.delete(6);
+        System.out.println(Arrays.toString(T1.keysToArray()));
         //T1.root = T1.rotateLeft(T1.getRoot());
         System.out.println("____________");
         AVLTree.print2DUtil(T1.root, 0);
-
-
-
-
-
-
-
 
         T1.printArray(T1.keysToArray());
         if(!(T1.isEqualkeys(new int[] {1,2,4,6,7,8,9}))){
@@ -45,14 +38,6 @@ public class Tester {
         if(!(T1.infoToArray() == new String[] {"a", "b", "idoamit", "elai", "sapir", "ido", "snir"})){
             System.out.println("Error in infosToArray");
         }
-
-
-
-
-
-
-
-
 
     }
 }

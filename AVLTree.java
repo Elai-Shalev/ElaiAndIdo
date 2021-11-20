@@ -132,12 +132,23 @@ public class AVLTree {
 				succ.getParent().setLeft(succ.getRight());
 				succ.getRight().setParent(succ.getParent());
 			}
+			if (succ.getParent().getLeft()==succ){
+				succ.getParent().setLeft(virtualNode);
+			}
+			else{
+				succ.getParent().setRight(virtualNode);
+			}
 			succ.setLeft(curr.getLeft());
 			succ.setRight(curr.getRight());
 			curr.getRight().setParent(succ);
 			curr.getLeft().setParent(succ);
-			curr.getParent().setLeft(succ);
-			succ.getParent().setLeft(virtualNode);
+			succ.setParent(curr.getParent());
+			if (curr.getParent().getRight()==curr){
+				curr.getParent().setRight(succ);
+			}
+			else {
+				curr.getParent().setLeft(succ);
+			}
 		}
 
 		//one child
@@ -148,6 +159,8 @@ public class AVLTree {
 			curr.getLeft().setParent(curr.getParent());
 			curr.getParent().setLeft(curr.getLeft());
 		}
+
+		this.size--;
 		return rebalance(succ);
 	}
 
