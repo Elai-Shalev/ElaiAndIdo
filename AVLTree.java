@@ -6,175 +6,148 @@
  * distinct integer keys and info.
  *
  */
-
 public class AVLTree {
 	private final ExternalLeaf virtualNode = new ExternalLeaf();
 	public IAVLNode root;
 	private int size = 0;
+	static final int COUNT = 10;
 
-	public void printArray(int[] arr){
+	public void printArray(int[] arr) {
 		for (int item :
 				arr) {
-			System.out.println(item);
+			System.out.print(item);
 		}
 	}
-	public boolean isEqualkeys(int[] keys){
-		if(this.size!=keys.length){
+	public boolean isEqualkeys(int[] keys) {
+		if (this.size != keys.length) {
 			return false;
 		}
-		int [] them_keys = this.keysToArray();
-		for(int i=0; i<this.size; i++){
-			if(them_keys[i]!=keys[i]){
+		int[] them_keys = this.keysToArray();
+		for (int i = 0; i < this.size; i++) {
+			if (them_keys[i] != keys[i]) {
 				return false;
 			}
 		}
 		return true;
 
 	}
-
-  /**
-   * public boolean empty()
-   *
-   * Returns true if and only if the tree is empty.
-   *
-   */
-  public boolean empty() {
-	  return this.root == null;
-  }
-
- /**
-   * public String search(int k)
-   *
-   * Returns the info of an item with key k if it exists in the tree.
-   * otherwise, returns null.
-   */
-  public String search(int k)
-  {
+	/**
+	 * public boolean empty()
+	 * <p>
+	 * Returns true if and only if the tree is empty.
+	 */
+	public boolean empty() {
+		return this.root == null;
+	}
+	/**
+	 * public String search(int k)
+	 * <p>
+	 * Returns the info of an item with key k if it exists in the tree.
+	 * otherwise, returns null.
+	 */
+	public IAVLNode searchNode(int k) {
 		IAVLNode curr = this.root;
-		while (curr.isRealNode()){
-			if (k == curr.getKey()){
-				return curr.getValue();
-			}
-			else if (k < curr.getKey()){
+		while (curr.isRealNode()) {
+			if (k == curr.getKey()) {
+				return curr;
+			} else if (k < curr.getKey()) {
 				curr = curr.getLeft();
-			}
-			else {
+			} else {
 				curr = curr.getRight();
 			}
 		}
 		return null;
-  }
+	}
 
-  /**
-   * public int insert(int k, String i)
-   *
-   * Inserts an item with key k and info i to the AVL tree.
-   * The tree must remain valid, i.e. keep its invariants.
-   * Returns the number of re-balancing operations, or 0 if no re-balancing operations were necessary.
-   * A promotion/rotation counts as one re-balance operation, double-rotation is counted as 2.
-   * Returns -1 if an item with key k already exists in the tree.
-   */
-   public int insert(int k, String i) {
-   		if (empty()){
-   			this.root = new AVLNode(k, i, null);
+	public String search(int k) {
+		return searchNode(k).getValue();
+	}
+
+	/**
+	 * public int insert(int k, String i)
+	 * <p>
+	 * Inserts an item with key k and info i to the AVL tree.
+	 * The tree must remain valid, i.e. keep its invariants.
+	 * Returns the number of re-balancing operations, or 0 if no re-balancing operations were necessary.
+	 * A promotion/rotation counts as one re-balance operation, double-rotation is counted as 2.
+	 * Returns -1 if an item with key k already exists in the tree.
+	 */
+	public int insert(int k, String i) {
+		if (empty()) {
+			this.root = new AVLNode(k, i, null);
 			this.size++;
-   			return 0;
-	    }
-   		IAVLNode curr = this.root;
-   		while ((k < curr.getKey() && curr.getLeft().isRealNode()) ||
-			   (k > curr.getKey() && curr.getRight().isRealNode())){
-   			if (k < curr.getKey()){
+			return 0;
+		}
+		IAVLNode curr = this.root;
+		while ((k < curr.getKey() && curr.getLeft().isRealNode()) ||
+				(k > curr.getKey() && curr.getRight().isRealNode())) {
+			if (k < curr.getKey()) {
 				curr = curr.getLeft();
-			}
-   			else{
-   				curr = curr.getRight();
+			} else {
+				curr = curr.getRight();
 			}
 		}
 
-	    if (k == curr.getKey()){
-		    return -1;
-	    }
+		if (k == curr.getKey()) {
+			return -1;
+		}
 
-	    if (k < curr.getKey()){
+		if (k < curr.getKey()) {
 			curr.setLeft(new AVLNode(k, i, curr));
 		}
 
-	    if (k > curr.getKey()){
-		    curr.setRight(new AVLNode(k, i, curr));
-	    }
+		if (k > curr.getKey()) {
+			curr.setRight(new AVLNode(k, i, curr));
+		}
 
-	    this.size++;
-	    return this.rebalance(curr);
-   }
+		this.size++;
+		return this.rebalance(curr);
+	}
 
-  /**
-   * public int delete(int k)
-   *
-   * Deletes an item with key k from the binary tree, if it is there.
-   * The tree must remain valid, i.e. keep its invariants.
-   * Returns the number of re-balancing operations, or 0 if no re-balancing operations were necessary.
-   * A promotion/rotation counts as one re-balance operation, double-rotation is counted as 2.
-   * Returns -1 if an item with key k was not found in the tree.
-   */
-   public int delete(int k)
-   {
-	   if(empty()){
-		   return 0;
-	   }
-	   int [] changes = new int[1];
-	   this.root = deleteRec(k, root, changes);
+	/**
+	 * public int delete(int k)
+	 * <p>
+	 * Deletes an item with key k from the binary tree, if it is there.
+	 * The tree must remain valid, i.e. keep its invariants.
+	 * Returns the number of re-balancing operations, or 0 if no re-balancing operations were necessary.
+	 * A promotion/rotation counts as one re-balance operation, double-rotation is counted as 2.
+	 * Returns -1 if an item with key k was not found in the tree.
+	 */
+	public int delete(int k) {
+		if (empty()) {
+			return 0;
+		}
+		IAVLNode curr = searchNode(k);
+		IAVLNode succ = null;
 
-	   //updateHeight(node);
-	   //this.rebalance(node);
+		//is leaf
+		if (!curr.getLeft().isRealNode() && !curr.getRight().isRealNode()) {
+			curr = AVLTree.this.virtualNode;
+		}
+		//two children
+		else if (curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
+			succ = Successor(curr.getRight());
+			if (succ.getRight().isRealNode()) {
+				succ.getParent().setLeft(succ.getRight());
+				succ.getRight().setParent(succ.getParent());
+			}
+			succ.setLeft(curr.getLeft());
+			succ.setRight(curr.getRight());
+			curr.getRight().setParent(succ);
+			curr.getLeft().setParent(succ);
+			curr.getParent().setLeft(succ);
+			succ.getParent().setLeft(virtualNode);
+		}
 
+		//one child
+		else if (!curr.getLeft().isRealNode()) {
+			curr = curr.getRight();
+		} else if (!curr.getRight().isRealNode()) {
+			curr = curr.getLeft();
+		}
 
-	   return 421;	// to be replaced by student code
-   }
-
-   public IAVLNode deleteRec(int k, IAVLNode curr, int [] changes) {
-
-	   if (k < curr.getKey()) {
-		   curr.setLeft(deleteRec(k, curr.getLeft(), changes));
-	   } else if (k > curr.getKey()) {
-		   curr.setRight(deleteRec(k, curr.getRight(), changes));
-	   }
-	   //now k is curr key
-
-	   //is leaf
-	   else if (!curr.getLeft().isRealNode() && !curr.getRight().isRealNode()) {
-		   curr = AVLTree.this.virtualNode;
-	   }
-
-	   //two children
-	   else if (curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
-
-		   IAVLNode succ = Successor(curr.getRight());
-		   int succkey = succ.getKey();
-
-		   curr.setRight(deleteRec(succkey, this.getRoot(), changes));
-	   }
-
-
-	   //one child
-	   else if (!curr.getLeft().isRealNode()) {
-		   curr = curr.getRight();
-	   } else if (!curr.getRight().isRealNode()) {
-		   curr = curr.getLeft();
-	   }
-
-
-
-
-
-
-
-
-		   //int heightDiff = root.heightDiff();
-
-	   return curr;
-	   }
-
-
+		return rebalance(succ);
+	}
 
    public IAVLNode Successor(IAVLNode node) {
 	   if(!node.getRight().isRealNode()){
@@ -192,11 +165,6 @@ public class AVLTree {
 	   }
 	   return succ;
    }
-
-
-
-
-
    /**
     * public String min()
     *
@@ -246,7 +214,6 @@ public class AVLTree {
 	  int[] index = new int[]{0};
 	  inOrderKeys(this.root, keys,index);
 	  return keys;
-
   }
   	public static void inOrderKeys (IAVLNode node, int [] keys, int[] index){
 		if (!node.isRealNode()) {
@@ -257,13 +224,11 @@ public class AVLTree {
 		index[0]++;
 		inOrderKeys(node.getRight(), keys, index);
 	}
-
 	private void updateHeight(IAVLNode node) {
 		int leftHeight = node.getLeft().getHeight();
 		int rightHeight = node.getRight().getHeight();
 		node.setHeight(Math.max(leftHeight, rightHeight) + 1);
 	}
-
   /**
    * public String[] infoToArray()
    *
@@ -287,7 +252,6 @@ public class AVLTree {
 		index[0]++;
 		inOrderVals(node.getRight(), values, index);
 	}
-
    /**
     * public int size()
     *
@@ -297,7 +261,6 @@ public class AVLTree {
    {
 	   return this.size;
    }
-   
    /**
     * public int getRoot()
     *
@@ -345,17 +308,7 @@ public class AVLTree {
 	* to usa after insert, delete and rebalance
     */
    public void Update(IAVLNode node){
-
    }
-
-
-	/** isEqual
-	 *
-	 *
-	 *
-	 *
-	 */
-
 
 	/**
 	 *  public IAVLNode rotateLeft
@@ -369,12 +322,11 @@ public class AVLTree {
 		IAVLNode new_mid = node.getRight();
 		node.setRight(new_mid.getLeft());
 		new_mid.setLeft(node);
+
 		updateHeight(node);
 		updateHeight(new_mid);
 
-
 		return new_mid;
-
 	}
 
 	/**
@@ -390,6 +342,38 @@ public class AVLTree {
 		updateHeight(new_mid);
 
 		return new_mid;
+	}
+
+	// Wrapper over print2DUtil()
+
+	static void print2DUtil(IAVLNode root, int space)
+	{
+		// Base case
+		if (!root.isRealNode())
+			return;
+
+		// Increase distance between levels
+		space += COUNT;
+
+		// Process right child first
+		print2DUtil(root.getRight(), space);
+
+		// Print current node after space
+		// count
+		System.out.print("\n");
+		for (int i = COUNT; i < space; i++)
+			System.out.print(" ");
+		System.out.print(root.getKey() + "\n");
+
+		// Process left child
+		print2DUtil(root.getLeft(), space);
+	}
+
+	// Wrapper over print2DUtil()
+	static void print2D(IAVLNode root)
+	{
+		// Pass initial space count as 0
+		print2DUtil(root, 0);
 	}
 
 	/**

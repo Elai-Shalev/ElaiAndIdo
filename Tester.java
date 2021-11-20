@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Tester {
 
     public static void main(String [] args){
@@ -22,9 +24,17 @@ public class Tester {
             System.out.println("Error in min() \n" +
                     "prints: " + T1.min() +" should print: a");
         }
-        System.out.println(T1.getRoot().getValue());
+
+        AVLTree.print2DUtil(T1.root, 0);
+        T1.delete(2);
         //T1.root = T1.rotateLeft(T1.getRoot());
-        System.out.println(T1.getRoot().getValue());
+        System.out.println("____________");
+        AVLTree.print2DUtil(T1.root, 0);
+
+
+
+
+
 
 
 
