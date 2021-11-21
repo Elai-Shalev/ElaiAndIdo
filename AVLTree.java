@@ -333,14 +333,20 @@ public class AVLTree {
 	public IAVLNode rotateLeft(IAVLNode node){
 
 		if(!node.isRealNode()){ return node;}
+		if(!node.getRight().isRealNode()){ return node;}
 
 		IAVLNode new_mid = node.getRight();
+		new_mid.setParent(null);
+
 		node.setRight(new_mid.getLeft());
+		node.getRight().setParent(node);
+
 		new_mid.setLeft(node);
+		node.setParent(new_mid);
 
 		updateHeight(node);
 		updateHeight(new_mid);
-
+		this.root = new_mid;
 		return new_mid;
 	}
 
@@ -350,13 +356,22 @@ public class AVLTree {
 	 *  Rotates Node Right
 	 */
 	public IAVLNode rotateRight(IAVLNode node) {
+		if(!node.isRealNode()){ return node;}
+		if(!node.getLeft().isRealNode()){ return node;}
 		IAVLNode new_mid = node.getLeft();
+		new_mid.setLeft(node.getLeft().getLeft());
+		new_mid.getLeft().setParent(new_mid);
+		new_mid.setParent(null);
 		node.setLeft(new_mid.getRight());
+		node.getLeft().setParent(node);
 		new_mid.setRight(node);
+		node.setParent(new_mid);
+
 		updateHeight(node);
 		updateHeight(new_mid);
-
+		this.root = new_mid;
 		return new_mid;
+
 	}
 
 	// Wrapper over print2DUtil()

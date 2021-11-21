@@ -5,6 +5,7 @@ public class Tester {
     public static void main(String [] args){
 
         AVLTree T1 = new AVLTree();
+
         T1.insert(1,"a");
         T1.insert(2,"b");
         T1.insert(6,"elai");
@@ -12,6 +13,13 @@ public class Tester {
         T1.insert(7, "sapir");
         T1.insert(9, "snir");
         T1.insert(4, "idoamit");
+
+
+
+        //rotate testing
+        //AVLTree.print2DUtil(T1.root, 0);
+        //T1.rotateLeft(T1.root);
+        //AVLTree.print2DUtil(T1.root, 0);
 
         if(!(T1.max() == "snir")){
             System.out.println("Error in max() \n" +
@@ -28,6 +36,7 @@ public class Tester {
         T1.delete(6);
         System.out.println(Arrays.toString(T1.keysToArray()));
         //T1.root = T1.rotateLeft(T1.getRoot());
+
         System.out.println("____________");
         AVLTree.print2DUtil(T1.root, 0);
 
