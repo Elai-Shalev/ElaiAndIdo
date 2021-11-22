@@ -122,7 +122,15 @@ public class AVLTree {
 
 		//is leaf
 		if (!curr.getLeft().isRealNode() && !curr.getRight().isRealNode()) {
-			curr = AVLTree.this.virtualNode;
+			if (curr == this.root){
+				this.root = null;
+			}
+			else if (curr.getParent().getLeft() == curr){
+				curr.getParent().setLeft(virtualNode);
+			}
+			else{
+				curr.getParent().setRight(virtualNode);
+			}
 		}
 		//two children
 		else if (curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
@@ -143,21 +151,35 @@ public class AVLTree {
 			curr.getRight().setParent(succ);
 			curr.getLeft().setParent(succ);
 			succ.setParent(curr.getParent());
-			if (curr.getParent().getRight()==curr){
-				curr.getParent().setRight(succ);
+			if (curr.getParent() != null) {
+				if (curr.getParent().getRight() == curr) {
+					curr.getParent().setRight(succ);
+				} else {
+					curr.getParent().setLeft(succ);
+				}
 			}
-			else {
-				curr.getParent().setLeft(succ);
+			else{
+				this.root = succ;
 			}
 		}
 
 		//one child
 		else if (!curr.getLeft().isRealNode()) {
 			curr.getRight().setParent(curr.getParent());
-			curr.getParent().setRight(curr.getRight());
+			if (curr.getParent() != null) {
+				curr.getParent().setRight(curr.getRight());
+			}
+			else{
+				this.root = curr.getRight();
+			}
 		} else  {
 			curr.getLeft().setParent(curr.getParent());
-			curr.getParent().setLeft(curr.getLeft());
+			if (curr.getParent() != null) {
+				curr.getParent().setLeft(curr.getLeft());
+			}
+			else{
+				this.root = curr.getLeft();
+			}
 		}
 
 		this.size--;
