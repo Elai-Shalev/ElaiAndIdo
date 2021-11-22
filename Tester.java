@@ -18,7 +18,7 @@ public class Tester {
 
         //rotate testing
         //AVLTree.print2DUtil(T1.root, 0);
-        //T1.rotateLeft(T1.root);
+        T1.rotateLeft(T1.root);
         //AVLTree.print2DUtil(T1.root, 0);
 
         if(!(T1.max() == "snir")){
@@ -33,7 +33,7 @@ public class Tester {
 
         AVLTree.print2DUtil(T1.root, 0);
         System.out.println(Arrays.toString(T1.keysToArray()));
-        T1.delete(6);
+        T1.delete(2);
         System.out.println(Arrays.toString(T1.keysToArray()));
         //T1.root = T1.rotateLeft(T1.getRoot());
 
