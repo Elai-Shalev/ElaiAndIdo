@@ -6,13 +6,32 @@ public class Tester {
 
         AVLTree T1 = new AVLTree();
 
-        T1.insert(1,"a");
-        T1.insert(2,"b");
-        T1.insert(6,"elai");
-        T1.insert(8, "Ido");
-        T1.insert(7, "sapir");
-        T1.insert(9, "snir");
-        T1.insert(4, "idoamit");
+        T1.insert(2,"a");
+        T1.insert(1,"b");
+        T1.insert(3,"elai");
+        //T1.insert(8, "Ido");
+        //T1.insert(7, "sapir");
+        //T1.insert(9, "snir");
+        //T1.insert(4, "idoamit");
+
+        AVLTree T2 = new AVLTree();
+        T2.insert(14,"");
+        T2.insert(10,"");
+        T2.insert(16,"");
+        T2.insert(9,"");
+        T2.insert(12,"");
+        T2.insert(15,"");
+        T2.insert(17,"");
+
+        AVLTree Node = new AVLTree();
+        Node.insert(4,"");
+        AVLTree.print2DUtil(T1.root,0);
+        AVLTree.print2DUtil(T2.root,0);
+        System.out.println("___");
+        T1.join(Node.getRoot(), T2);
+        AVLTree.print2DUtil(T1.root,0);
+
+
 
 
 

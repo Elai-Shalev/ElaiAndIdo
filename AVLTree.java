@@ -312,9 +312,48 @@ public class AVLTree {
 	*
 	* precondition: keys(t) < x < keys() or keys(t) > x > keys(). t/tree might be empty (rank = -1).
     * postcondition: none
+	*
     */   
    public int join(IAVLNode x, AVLTree t)
    {
+	   if(empty() || t.empty()){
+		   return 1;
+	   }
+	   //CASE 1: if this.tree is shorter than t
+	   if(x.getKey() > this.getRoot().getKey()) {
+
+		   //find b
+		   int a_height = this.getRoot().getHeight();
+		   IAVLNode b = t.getRoot();
+		   while (b.getHeight() >= a_height) {
+			   b = b.getLeft();
+		   }
+		   IAVLNode c = b.getParent();
+		   x.setParent(c);
+		   x.setRight(b);
+		   x.setLeft(this.getRoot());
+		   this.root.setParent(x);
+		   b.setParent(x);
+		   //chaning the root - now one tree
+		   this.root = t.root;
+	   }
+
+	   /*else {
+		   int a_height = t.getRoot().getHeight();
+		   IAVLNode b = this.getRoot();
+		   while (b.getHeight() >= a_height) {
+			   b = b.getRight();
+
+
+		   }
+	   }
+
+	    */
+
+	   //case 2: if this.tree is taller than t
+
+
+
 	   return -1;
    }
 
