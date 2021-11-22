@@ -336,13 +336,12 @@ public class AVLTree {
     * postcondition: none
 	*
     */   
-   public int join(IAVLNode x, AVLTree t)
-   {
-	   if(empty() || t.empty()){
+   public int join(IAVLNode x, AVLTree t) {
+	   if (empty() || t.empty()) {
 		   return 1;
 	   }
 	   //CASE 1: if this.tree is shorter than t
-	   if(x.getKey() > this.getRoot().getKey()) {
+	   if (x.getKey() > this.getRoot().getKey()) {
 
 		   //find b
 		   int a_height = this.getRoot().getHeight();
@@ -357,26 +356,29 @@ public class AVLTree {
 		   this.root.setParent(x);
 		   b.setParent(x);
 		   //chaning the root - now one tree
+		   //need to check - what is X is the root?
 		   this.root = t.root;
-	   }
-
-	   /*else {
+		   return rebalance(this.root);
+	   } else {
+		   //case 2: if this.tree is taller than t
 		   int a_height = t.getRoot().getHeight();
-		   IAVLNode b = this.getRoot();
+		   IAVLNode b = t.getRoot();
 		   while (b.getHeight() >= a_height) {
 			   b = b.getRight();
-
-
 		   }
+		   IAVLNode c = b.getParent();
+		   x.setParent(c);
+		   x.setLeft(b);
+		   x.setRight(this.getRoot());
+		   this.root.setParent(x);
+		   b.setParent(x);
+		   //chaning the root - now one tree
+		   //need to check - what is X is the root?
+		   this.root = t.root;
+
 	   }
+	   return rebalance(this.root);
 
-	    */
-
-	   //case 2: if this.tree is taller than t
-
-
-
-	   return -1;
    }
 
    /**
