@@ -28,6 +28,11 @@ public class Tester {
         T2.insert(15,"");
         T2.insert(17,"");
 
+        AVLTree.print2D(T2.root);
+        T2.rotateLeft(T2.root);
+        AVLTree.print2D(T2.root);
+
+        /*
         AVLTree Node = new AVLTree();
         Node.insert(4,"");
         AVLTree.print2DUtil(T1.root,0);
@@ -35,6 +40,8 @@ public class Tester {
         System.out.println("___");
         T1.join(Node.getRoot(), T2);
         AVLTree.print2DUtil(T1.root,0);
+
+         */
 
 
 

@@ -393,23 +393,32 @@ public class AVLTree {
 	 *
 	 *  Rotates Node Left
 	 */
-	public IAVLNode rotateLeft(IAVLNode node){
-
-		if(!node.isRealNode()){ return node;}
-		if(!node.getRight().isRealNode()){ return node;}
-
+	public IAVLNode rotateLeft(IAVLNode node) {
+		if (!node.isRealNode()) {
+			return node;
+		}
+		if (!node.getRight().isRealNode()) {
+			return node;
+		}
 		IAVLNode new_mid = node.getRight();
-		new_mid.setParent(null);
 
+		new_mid.setParent(node.getParent());
+		if (node.getParent() != null) {
+			if (node.getParent().getLeft() == node) {
+				node.getParent().setLeft(new_mid);
+			} else {
+				node.getParent().setRight(new_mid);
+			}
+		}
 		node.setRight(new_mid.getLeft());
-		node.getRight().setParent(node);
-
+		new_mid.getLeft().setParent(node);
 		new_mid.setLeft(node);
 		node.setParent(new_mid);
-
 		updateHeight(node);
 		updateHeight(new_mid);
-		this.root = new_mid;
+		if (new_mid.getParent() == null) {
+			this.root = new_mid;
+		}
 		return new_mid;
 	}
 
@@ -422,25 +431,35 @@ public class AVLTree {
 		if(!node.isRealNode()){ return node;}
 		if(!node.getLeft().isRealNode()){ return node;}
 		IAVLNode new_mid = node.getLeft();
-		new_mid.setLeft(node.getLeft().getLeft());
-		new_mid.getLeft().setParent(new_mid);
-		new_mid.setParent(null);
+
+		new_mid.setParent(node.getParent());
+		if(node.getParent()!=null) {
+			if (node.getParent().getLeft() == node) {
+				node.getParent().setLeft(new_mid);
+			} else {
+				node.getParent().setRight(new_mid);
+			}
+		}
+
 		node.setLeft(new_mid.getRight());
-		node.getLeft().setParent(node);
+		new_mid.getRight().setParent(node);
 		new_mid.setRight(node);
 		node.setParent(new_mid);
-
 		updateHeight(node);
 		updateHeight(new_mid);
-		this.root = new_mid;
+		if(new_mid.getParent() == null){
+			this.root = new_mid;
+		}
 		return new_mid;
 
 	}
+
 
 	// Wrapper over print2DUtil()
 
 	static void print2DUtil(IAVLNode root, int space)
 	{
+
 		// Base case
 		if (!root.isRealNode())
 			return;
@@ -465,7 +484,9 @@ public class AVLTree {
 	// Wrapper over print2DUtil()
 	static void print2D(IAVLNode root)
 	{
+		System.out.println("_______________");
 		// Pass initial space count as 0
+
 		print2DUtil(root, 0);
 	}
 
