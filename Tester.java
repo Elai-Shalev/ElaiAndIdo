@@ -9,6 +9,11 @@ public class Tester {
         T1.insert(2,"a");
         T1.insert(1,"b");
         T1.insert(3,"elai");
+        AVLTree.print2DUtil(T1.root, 0);
+        System.out.println("____________");
+        T1.rotateLeft(T1.root);
+        AVLTree.print2DUtil(T1.root, 0);
+        System.out.println("____________");
         //T1.insert(8, "Ido");
         //T1.insert(7, "sapir");
         //T1.insert(9, "snir");

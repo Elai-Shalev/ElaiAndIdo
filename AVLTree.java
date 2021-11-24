@@ -474,7 +474,31 @@ public class AVLTree {
 	 *
 	 *  Rebalances Tree
 	 */
-	public int rebalance(IAVLNode node){ return 0;}
+	public int rebalance(IAVLNode node){
+		node.updateHeight();
+		int numRotations = 0;
+
+		while(node != null){
+			if (node.heightDiff() > 1){
+				if (node.getLeft().heightDiff() == -1){
+					this.rotateLeft(node.getLeft());
+					numRotations++;
+				}
+				node = this.rotateRight(node);
+				numRotations++;
+			}
+			else if (node.heightDiff() < -1){
+				if (node.getRight().heightDiff() == 1){
+					this.rotateRight(node.getRight());
+					numRotations++;
+				}
+				node = this.rotateLeft(node);
+				numRotations++;
+			}
+			node = node.getParent();
+		}
+		return 0;
+	}
 
 	/** 
 	 * public interface IAVLNode
@@ -492,6 +516,8 @@ public class AVLTree {
 		public boolean isRealNode(); // Returns True if this is a non-virtual AVL node.
     	public void setHeight(int height); // Sets the height of the node.
     	public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
+		public void updateHeight(); //Updates the height of the current node based on its children
+		public int heightDiff(); // Returns right child height - left child height;
 	}
 
    /** 
