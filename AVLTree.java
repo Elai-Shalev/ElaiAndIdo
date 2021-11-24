@@ -9,7 +9,6 @@
 public class AVLTree {
 	private final ExternalLeaf virtualNode = new ExternalLeaf();
 	public IAVLNode root;
-	private int size = 0;
 	static final int COUNT = 10;
 
 	public void printArray(int[] arr) {
@@ -19,11 +18,11 @@ public class AVLTree {
 		}
 	}
 	public boolean isEqualkeys(int[] keys) {
-		if (this.size != keys.length) {
+		if (this.size() != keys.length) {
 			return false;
 		}
 		int[] them_keys = this.keysToArray();
-		for (int i = 0; i < this.size; i++) {
+		for (int i = 0; i < this.size(); i++) {
 			if (them_keys[i] != keys[i]) {
 				return false;
 			}
@@ -75,7 +74,6 @@ public class AVLTree {
 	public int insert(int k, String i) {
 		if (empty()) {
 			this.root = new AVLNode(k, i, null);
-			this.size++;
 			return 0;
 		}
 		IAVLNode curr = this.root;
@@ -100,7 +98,6 @@ public class AVLTree {
 			curr.setRight(new AVLNode(k, i, curr));
 		}
 
-		this.size++;
 		return this.rebalance(curr);
 	}
 
@@ -182,7 +179,6 @@ public class AVLTree {
 			}
 		}
 
-		this.size--;
 		return rebalance(succ);
 	}
 
@@ -247,7 +243,7 @@ public class AVLTree {
    */
   public int[] keysToArray(){
 
-	  int[] keys = new int[size];
+	  int[] keys = new int[size()];
 	  int[] index = new int[]{0};
 	  inOrderKeys(this.root, keys,index);
 	  return keys;
@@ -271,7 +267,7 @@ public class AVLTree {
    */
   public String[] infoToArray()
   {
-	  String[] values = new String[size];
+	  String[] values = new String[size()];
 	  int[] index = new int[]{0};
 	  inOrderVals(this.root, values ,index);
 	  return values;
@@ -292,7 +288,7 @@ public class AVLTree {
     */
    public int size()
    {
-	   return this.size;
+	   return this.root.getSize();
    }
    /**
     * public int getRoot()
@@ -376,13 +372,6 @@ public class AVLTree {
 	   return rebalance(this.root);
    }
 
-   /**
-	* updates the rooted_size field upwards in every node changed -
-	* to usa after insert, delete and rebalance
-    */
-   public void Update(IAVLNode node){
-   }
-
 	/**
 	 *  public IAVLNode rotateLeft
 	 *
@@ -413,6 +402,8 @@ public class AVLTree {
 		if (new_mid.getParent() == null) {
 			this.root = new_mid;
 		}
+		node.updateSize();
+		new_mid.updateSize();
 		return new_mid;
 	}
 
@@ -444,8 +435,9 @@ public class AVLTree {
 		if(new_mid.getParent() == null){
 			this.root = new_mid;
 		}
+		node.updateSize();
+		new_mid.updateSize();
 		return new_mid;
-
 	}
 
 
@@ -494,6 +486,7 @@ public class AVLTree {
 		int numOps = 0;
 
 		while(node != null){
+			node.updateSize();
 			numOps += node.updateHeight();
 			if (node.heightDiff() > 1){
 				if (node.getLeft().heightDiff() == -1){
@@ -532,6 +525,8 @@ public class AVLTree {
     	public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
 		public int updateHeight(); //Updates the height of the current node based on its children
 		public int heightDiff(); // Returns right child height - left child height;
+		public int getSize(); // Returns size of sub-tree
+		public void updateSize(); // Updates size of tree: left.size + right.size + 1
 	}
 
    /** 
@@ -549,7 +544,7 @@ public class AVLTree {
   		private IAVLNode right;
   		private IAVLNode parent;
   		private int height;
-		private int rooted_size;
+		private int size;
 
   		public AVLNode(int key, String info, IAVLNode parent){
 			this.key = key;
@@ -558,7 +553,7 @@ public class AVLTree {
 			this.height = 0;
 			this.left = AVLTree.this.virtualNode;
 			this.right = AVLTree.this.virtualNode;
-			this.rooted_size = 0;
+			this.size = 1;
 		}
 
 		public int getKey()
@@ -620,7 +615,13 @@ public class AVLTree {
 			return 0;
 		}
 
-		public int getRooted_size(){ return this.rooted_size;}
+		public int getSize(){
+  			return this.size;
+		}
+
+		public void updateSize(){
+  			this.size = this.left.getSize() + this.right.getSize() + 1;
+		}
   }
 
 	/**
@@ -632,6 +633,7 @@ public class AVLTree {
 		public ExternalLeaf() {
 			super(-1, null, null);
 			this.setHeight(-1);
+			super.size = 0;
 		}
 
 		@Override
