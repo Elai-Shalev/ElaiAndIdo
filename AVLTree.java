@@ -261,11 +261,7 @@ public class AVLTree {
 		index[0]++;
 		inOrderKeys(node.getRight(), keys, index);
 	}
-	private void updateHeight(IAVLNode node) {
-		int leftHeight = node.getLeft().getHeight();
-		int rightHeight = node.getRight().getHeight();
-		node.setHeight(Math.max(leftHeight, rightHeight) + 1);
-	}
+
   /**
    * public String[] infoToArray()
    *
@@ -378,7 +374,6 @@ public class AVLTree {
 
 	   }
 	   return rebalance(this.root);
-
    }
 
    /**
@@ -401,7 +396,6 @@ public class AVLTree {
 			return node;
 		}
 		IAVLNode new_mid = node.getRight();
-
 		new_mid.setParent(node.getParent());
 		if (node.getParent() != null) {
 			if (node.getParent().getLeft() == node) {
@@ -414,8 +408,8 @@ public class AVLTree {
 		new_mid.getLeft().setParent(node);
 		new_mid.setLeft(node);
 		node.setParent(new_mid);
-		updateHeight(node);
-		updateHeight(new_mid);
+		node.updateHeight();
+		new_mid.updateHeight();
 		if (new_mid.getParent() == null) {
 			this.root = new_mid;
 		}
@@ -445,8 +439,8 @@ public class AVLTree {
 		new_mid.getRight().setParent(node);
 		new_mid.setRight(node);
 		node.setParent(new_mid);
-		updateHeight(node);
-		updateHeight(new_mid);
+		node.updateHeight();
+		new_mid.updateHeight();
 		if(new_mid.getParent() == null){
 			this.root = new_mid;
 		}
@@ -496,29 +490,30 @@ public class AVLTree {
 	 *  Rebalances Tree
 	 */
 	public int rebalance(IAVLNode node){
-		node.updateHeight();
-		int numRotations = 0;
+
+		int numOps = 0;
 
 		while(node != null){
+			numOps += node.updateHeight();
 			if (node.heightDiff() > 1){
 				if (node.getLeft().heightDiff() == -1){
-					this.rotateLeft(node.getLeft());
-					numRotations++;
+					this.rotateRight(node.getLeft());
+					numOps++;
 				}
-				node = this.rotateRight(node);
-				numRotations++;
+				node = this.rotateLeft(node);
+				numOps++;
 			}
 			else if (node.heightDiff() < -1){
 				if (node.getRight().heightDiff() == 1){
-					this.rotateRight(node.getRight());
-					numRotations++;
+					this.rotateLeft(node.getRight());
+					numOps++;
 				}
-				node = this.rotateLeft(node);
-				numRotations++;
+				node = this.rotateRight(node);
+				numOps++;
 			}
 			node = node.getParent();
 		}
-		return 0;
+		return numOps;
 	}
 
 	/** 
@@ -537,7 +532,7 @@ public class AVLTree {
 		public boolean isRealNode(); // Returns True if this is a non-virtual AVL node.
     	public void setHeight(int height); // Sets the height of the node.
     	public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
-		public void updateHeight(); //Updates the height of the current node based on its children
+		public int updateHeight(); //Updates the height of the current node based on its children
 		public int heightDiff(); // Returns right child height - left child height;
 	}
 
@@ -616,9 +611,17 @@ public class AVLTree {
 	    public int heightDiff(){
   			return this.right.getHeight() - this.left.getHeight();
 		}
-		public void updateHeight(){
-  			this.setHeight(Math.max(this.left.getHeight(), this.right.getHeight()) + 1);
+		public int updateHeight() {
+			int leftHeight = this.getLeft().getHeight();
+			int rightHeight = this.getRight().getHeight();
+			int neuheight = Math.max(leftHeight, rightHeight) + 1;
+			if (neuheight != this.getHeight()) {
+				this.setHeight(neuheight);
+				return 1;
+			}
+			return 0;
 		}
+
 		public int getRooted_size(){ return this.rooted_size;}
   }
 
@@ -627,11 +630,18 @@ public class AVLTree {
 	 *
 	 *  This class extends AVLNode and represents a Virtual Node, with height -1
 	 */
-	public class ExternalLeaf extends AVLNode{
-  		public ExternalLeaf(){
-  			super(-1, null, null);
-  			this.setHeight(-1);
+	public class ExternalLeaf extends AVLNode {
+		public ExternalLeaf() {
+			super(-1, null, null);
+			this.setHeight(-1);
 		}
+
+		@Override
+		public int heightDiff() {
+			return 0;
+		}
+	}
+
   }
-}
+
   

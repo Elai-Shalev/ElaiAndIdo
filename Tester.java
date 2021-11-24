@@ -6,6 +6,7 @@ public class Tester {
 
         AVLTree T1 = new AVLTree();
 
+        /*
         T1.insert(2,"a");
         T1.insert(1,"b");
         T1.insert(3,"elai");
@@ -19,18 +20,26 @@ public class Tester {
         //T1.insert(9, "snir");
         //T1.insert(4, "idoamit");
 
+         */
+
         AVLTree T2 = new AVLTree();
-        T2.insert(14,"");
-        T2.insert(10,"");
-        T2.insert(16,"");
-        T2.insert(9,"");
-        T2.insert(12,"");
-        T2.insert(15,"");
-        T2.insert(17,"");
+        T2.insert(7,"");
+        AVLTree.print2D(T2.root);
+        T2.insert(5,"");
+        AVLTree.print2D(T2.root);
+        T2.insert(8,"");
+        AVLTree.print2D(T2.root);
+        T2.insert(1,"");
+        AVLTree.print2D(T2.root);
+        T2.insert(4,"");
+        AVLTree.print2D(T2.root);
+        T2.insert(3,"");
+        AVLTree.print2D(T2.root);
+        T2.insert(2,"");
 
         AVLTree.print2D(T2.root);
-        T2.rotateLeft(T2.root);
-        AVLTree.print2D(T2.root);
+        //T2.rebalance(T2.root);
+        //AVLTree.print2D(T2.root);
 
         /*
         AVLTree Node = new AVLTree();
@@ -49,7 +58,7 @@ public class Tester {
 
         //rotate testing
         //AVLTree.print2DUtil(T1.root, 0);
-        T1.rotateLeft(T1.root);
+        //T1.rotateLeft(T1.root);
         //AVLTree.print2DUtil(T1.root, 0);
 
         if(!(T1.max() == "snir")){
