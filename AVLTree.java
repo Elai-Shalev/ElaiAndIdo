@@ -497,19 +497,17 @@ public class AVLTree {
 			numOps += node.updateHeight();
 			if (node.heightDiff() > 1){
 				if (node.getLeft().heightDiff() == -1){
-					this.rotateRight(node.getLeft());
-					numOps++;
-				}
-				node = this.rotateLeft(node);
-				numOps++;
-			}
-			else if (node.heightDiff() < -1){
-				if (node.getRight().heightDiff() == 1){
-					this.rotateLeft(node.getRight());
+					this.rotateLeft(node.getLeft());
 					numOps++;
 				}
 				node = this.rotateRight(node);
-				numOps++;
+			}
+			else if (node.heightDiff() < -1){
+				if (node.getRight().heightDiff() == 1){
+					this.rotateRight(node.getRight());
+					numOps++;
+				}
+				node = this.rotateLeft(node);
 			}
 			node = node.getParent();
 		}
@@ -609,7 +607,7 @@ public class AVLTree {
 	     	return this.height;
 	    }
 	    public int heightDiff(){
-  			return this.right.getHeight() - this.left.getHeight();
+  			return this.left.getHeight() - this.right.getHeight();
 		}
 		public int updateHeight() {
 			int leftHeight = this.getLeft().getHeight();

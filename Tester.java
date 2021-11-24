@@ -23,19 +23,19 @@ public class Tester {
          */
 
         AVLTree T2 = new AVLTree();
-        T2.insert(7,"");
+        System.out.println(T2.insert(70,""));
         AVLTree.print2D(T2.root);
-        T2.insert(5,"");
+        System.out.println(T2.insert(50,""));
         AVLTree.print2D(T2.root);
-        T2.insert(8,"");
+        System.out.println(T2.insert(60,""));
         AVLTree.print2D(T2.root);
-        T2.insert(1,"");
+        System.out.println(T2.insert(30,""));
         AVLTree.print2D(T2.root);
-        T2.insert(4,"");
+        System.out.println(T2.insert(20,""));
         AVLTree.print2D(T2.root);
-        T2.insert(3,"");
+        System.out.println(T2.insert(10,""));
         AVLTree.print2D(T2.root);
-        T2.insert(2,"");
+        System.out.println(T2.insert(100,""));
 
         AVLTree.print2D(T2.root);
         //T2.rebalance(T2.root);
