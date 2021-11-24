@@ -11,6 +11,13 @@ public class AVLTree {
 	public IAVLNode root;
 	static final int COUNT = 10;
 
+	public AVLTree(){}
+
+	public AVLTree(IAVLNode node){
+		super();
+		this.root = node;
+	}
+
 	public void printArray(int[] arr) {
 		for (int item :
 				arr) {
@@ -315,7 +322,17 @@ public class AVLTree {
     */   
    public AVLTree[] split(int x)
    {
-	   return null; 
+	   /*IAVLNode curr = this.searchNode(x);
+
+	   AVLTree t1 = new AVLTree(curr.getLeft());
+	   AVLTree t2 = new AVLTree(curr.getRight());
+
+	   while(curr.getParent() != null){
+	   		if (curr.getParent().getRight() == curr){
+	   			t1.join(curr.getParent().getLeft(), )
+			}
+	   }*/
+	   return new AVLTree[0];
    }
    
    /**
