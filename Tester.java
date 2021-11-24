@@ -6,51 +6,49 @@ public class Tester {
 
         AVLTree T1 = new AVLTree();
 
-        /*
+
         T1.insert(2,"a");
         T1.insert(1,"b");
         T1.insert(3,"elai");
-        AVLTree.print2DUtil(T1.root, 0);
-        System.out.println("____________");
-        T1.rotateLeft(T1.root);
-        AVLTree.print2DUtil(T1.root, 0);
-        System.out.println("____________");
+        T1.insert(5,"elai");
+        T1.insert(4,"elai");
+        T1.insert(6,"elai");
+
         //T1.insert(8, "Ido");
         //T1.insert(7, "sapir");
         //T1.insert(9, "snir");
         //T1.insert(4, "idoamit");
 
-         */
 
         AVLTree T2 = new AVLTree();
         System.out.println(T2.insert(70,""));
         AVLTree.print2D(T2.root);
-        System.out.println(T2.insert(50,""));
+        System.out.println(T2.insert(40,""));
         AVLTree.print2D(T2.root);
-        System.out.println(T2.insert(60,""));
+        System.out.println(T2.insert(10,""));
         AVLTree.print2D(T2.root);
         System.out.println(T2.insert(30,""));
         AVLTree.print2D(T2.root);
         System.out.println(T2.insert(20,""));
         AVLTree.print2D(T2.root);
-        System.out.println(T2.insert(10,""));
-        AVLTree.print2D(T2.root);
-        System.out.println(T2.insert(100,""));
+        System.out.println(T2.insert(15,""));
 
         AVLTree.print2D(T2.root);
+        System.out.println(T2.insert(17,""));
+
+
         //T2.rebalance(T2.root);
         //AVLTree.print2D(T2.root);
 
-        /*
-        AVLTree Node = new AVLTree();
-        Node.insert(4,"");
-        AVLTree.print2DUtil(T1.root,0);
-        AVLTree.print2DUtil(T2.root,0);
-        System.out.println("___");
-        T1.join(Node.getRoot(), T2);
-        AVLTree.print2DUtil(T1.root,0);
 
-         */
+        AVLTree Node = new AVLTree();
+        Node.insert(9,"");
+        AVLTree.print2D(T1.root);
+        AVLTree.print2D(T2.root);
+        T2.join(Node.getRoot(), T1);
+        AVLTree.print2D(T2.root);
+
+
 
 
 
