@@ -47,12 +47,12 @@ public class Tester {
         AVLTree.print2D(T2.root);
         T2.join(Node.getRoot(), T1);
         AVLTree.print2D(T2.root);
-
-
-
-
-
-
+        int splitBy = 6;
+        AVLTree[] splits = T2.split(splitBy);
+        System.out.println("Smaller than " + splitBy);
+        AVLTree.print2D(splits[0].root);
+        System.out.println("Bigger than " + splitBy);
+        AVLTree.print2D(splits[1].root);
 
         //rotate testing
         //AVLTree.print2DUtil(T1.root, 0);

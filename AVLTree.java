@@ -11,11 +11,14 @@ public class AVLTree {
 	public IAVLNode root;
 	static final int COUNT = 10;
 
-	public AVLTree(){}
+	public AVLTree(){
+		this.root = virtualNode;
+	}
 
 	public AVLTree(IAVLNode node){
 		super();
 		this.root = node;
+		this.root.setParent(null);
 	}
 
 	public void printArray(int[] arr) {
@@ -43,7 +46,7 @@ public class AVLTree {
 	 * Returns true if and only if the tree is empty.
 	 */
 	public boolean empty() {
-		return this.root == null;
+		return !this.root.isRealNode();
 	}
 	/**
 	 * public String search(int k)
@@ -322,17 +325,40 @@ public class AVLTree {
     */   
    public AVLTree[] split(int x)
    {
-	   /*IAVLNode curr = this.searchNode(x);
+	   IAVLNode curr = this.searchNode(x);
 
 	   AVLTree t1 = new AVLTree(curr.getLeft());
+	   t1.root = curr.getLeft();
+	   t1.root.setParent(null);
+	   curr.setLeft(virtualNode);
 	   AVLTree t2 = new AVLTree(curr.getRight());
+	   t2.root = curr.getRight();
+	   t2.root.setParent(null);
+	   curr.setRight(virtualNode);
+	   IAVLNode parent = curr.getParent();
+	   curr.setParent(null);
+	   AVLTree toJoin;
 
-	   while(curr.getParent() != null){
-	   		if (curr.getParent().getRight() == curr){
-	   			t1.join(curr.getParent().getLeft(), )
+	   while(parent != null){
+	   		if (parent.getRight() == curr){
+	   			toJoin = new AVLTree(parent.getLeft());
+	   			parent.setLeft(virtualNode);
+	   			curr = parent;
+	   			parent = curr.getParent();
+	   			curr.setParent(null);
+	   			t1.join(curr, toJoin);
 			}
-	   }*/
-	   return new AVLTree[0];
+	   		else{
+				toJoin = new AVLTree(parent.getRight());
+				parent.setRight(virtualNode);
+				curr = parent;
+				parent = curr.getParent();
+				curr.setParent(null);
+				t2.join(curr, toJoin);
+			}
+	   }
+	   //this.root = t1.root;
+	   return new AVLTree[]{t1, t2};
    }
    
    /**
