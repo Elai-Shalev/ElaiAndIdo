@@ -127,6 +127,10 @@ public class AVLTree {
 		IAVLNode curr = searchNode(k);
 		IAVLNode succ = null;
 
+		// Set default node to rebelance after delete - the parent of node k, in case it is a leaf or unary node
+		// If it is a node with 2 children, the node to rebalance would be changed to parent of successor or successor
+		IAVLNode toRebalance = curr.getParent();
+
 		//is leaf
 		if (!curr.getLeft().isRealNode() && !curr.getRight().isRealNode()) {
 			if (curr == this.root){
@@ -141,8 +145,16 @@ public class AVLTree {
 		}
 		//two children
 		else if (curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
-			//succ = Successor(curr.getRight());
 			succ =  Successor(curr);
+
+			// If successor is son of curr, set node to rebalance the as the successor. Otherwise set its parent
+			if (succ.getParent() == curr){
+				toRebalance = succ;
+			}
+			else{
+				toRebalance = succ.getParent();
+			}
+
 			if (succ.getRight().isRealNode()) {
 				succ.getParent().setLeft(succ.getRight());
 				succ.getRight().setParent(succ.getParent());
@@ -189,7 +201,7 @@ public class AVLTree {
 			}
 		}
 
-		return rebalance(succ);
+		return rebalance(toRebalance);
 	}
 
    public IAVLNode Successor(IAVLNode node) {
@@ -328,12 +340,8 @@ public class AVLTree {
 	   IAVLNode curr = this.searchNode(x);
 
 	   AVLTree t1 = new AVLTree(curr.getLeft());
-	   t1.root = curr.getLeft();
-	   t1.root.setParent(null);
 	   curr.setLeft(virtualNode);
 	   AVLTree t2 = new AVLTree(curr.getRight());
-	   t2.root = curr.getRight();
-	   t2.root.setParent(null);
 	   curr.setRight(virtualNode);
 	   IAVLNode parent = curr.getParent();
 	   curr.setParent(null);
@@ -357,7 +365,7 @@ public class AVLTree {
 				t2.join(curr, toJoin);
 			}
 	   }
-	   //this.root = t1.root;
+	   this.root = t1.root;
 	   return new AVLTree[]{t1, t2};
    }
    
@@ -373,57 +381,52 @@ public class AVLTree {
     */   
    public int join(IAVLNode x, AVLTree t) {
 	   if (empty() || t.empty()) {
+	   	   this.root = x;
 		   return 1;
 	   }
 	   int valuetoreturn = Math.abs(this.root.getHeight() - t.root.getHeight())+1;
-	   //CASE 1: if this.tree is shorter than t
-	   if (x.getKey() > this.getRoot().getKey()) {
 
+	   AVLTree smaller, bigger;
 
-		   //find b
-		   int a_height = this.getRoot().getHeight();
-
-		   IAVLNode b = t.getRoot();
-		   while (b.getHeight() >= a_height) {
-			   b = b.getLeft();
-		   }
-		   IAVLNode c = b.getParent();
-		   x.setParent(c);
-		   x.setRight(b);
-		   x.setLeft(this.getRoot());
-		   this.root.setParent(x);
-		   b.setParent(x);
-		   c.setLeft(x);
-		   //chaning the root - now one tree
-		   //need to check - what is X is the root?
-		   this.root = t.root;
-		   rebalance(c);
-		   rebalance(x);
-		   rebalance(b);
-		   return valuetoreturn;
-	   } else {
-		   //case 2: if this.tree is taller than t
-		   int a_height = t.getRoot().getHeight();
-		   IAVLNode b = t.getRoot();
-		   while (b.getHeight() >= a_height) {
-			   b = b.getRight();
-		   }
-		   IAVLNode c = b.getParent();
-		   x.setParent(c);
-		   x.setLeft(b);
-		   x.setRight(this.getRoot());
-		   this.root.setParent(x);
-		   b.setParent(x);
-		   c.setRight(x);
-		   //chaning the root - now one tree
-		   //need to check - what is X is the root?
-		   this.root = t.root;
-		   rebalance(c);
-		   rebalance(x);
-		   rebalance(b);
-		   return valuetoreturn;
-
+	   if (this.root.getKey() < x.getKey()){
+	   		smaller = this;
+	   		bigger = t;
 	   }
+	   else{
+	   		smaller = t;
+	   		bigger = this;
+	   }
+
+	   IAVLNode curr;
+	   if (smaller.root.getHeight() <= bigger.root.getHeight()){
+	   		// Height of smaller is shorter than bigger
+	   		curr = bigger.root;
+	   		while ((curr.getLeft().isRealNode()) && (curr.getHeight() >= smaller.root.getHeight())){
+	   			curr = curr.getLeft();
+			}
+	   		x.setLeft(smaller.root);
+	   		x.setRight(curr);
+	   		curr.getParent().setLeft(x);
+	   		smaller.root.setParent(x);
+	   		this.root = bigger.root;
+	   }
+	   else{
+		   // Height of smaller is longer than bigger
+		   curr = smaller.root;
+		   while ((curr.getRight().isRealNode()) && (curr.getHeight() >= smaller.root.getHeight())){
+			   curr = curr.getRight();
+		   }
+		   x.setRight(bigger.root);
+		   x.setLeft(curr);
+		   curr.getParent().setRight(x);
+		   bigger.root.setParent(x);
+		   this.root = smaller.root;
+	   }
+	   x.setParent(curr.getParent());
+	   curr.setParent(x);
+
+	   this.rebalance(x);
+	   return valuetoreturn;
 
    }
 

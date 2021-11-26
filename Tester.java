@@ -13,19 +13,20 @@ public class Tester {
         T1.insert(5,"elai");
         T1.insert(4,"elai");
         T1.insert(6,"elai");
-
-        //T1.insert(8, "Ido");
-        //T1.insert(7, "sapir");
-        //T1.insert(9, "snir");
-        //T1.insert(4, "idoamit");
-
+        T1.insert(7,"elai");
+        T1.insert(8,"elai");
+        T1.insert(9,"elai");
+        T1.insert(10,"elai");
+        T1.insert(11,"elai");
+        T1.insert(12,"elai");
+        T1.insert(13,"elai");
 
         AVLTree T2 = new AVLTree();
         System.out.println(T2.insert(70,""));
         AVLTree.print2D(T2.root);
         System.out.println(T2.insert(40,""));
         AVLTree.print2D(T2.root);
-        System.out.println(T2.insert(10,""));
+        System.out.println(T2.insert(21,""));
         AVLTree.print2D(T2.root);
         System.out.println(T2.insert(30,""));
         AVLTree.print2D(T2.root);
@@ -36,13 +37,8 @@ public class Tester {
         AVLTree.print2D(T2.root);
         System.out.println(T2.insert(17,""));
 
-
-        //T2.rebalance(T2.root);
-        //AVLTree.print2D(T2.root);
-
-
         AVLTree Node = new AVLTree();
-        Node.insert(9,"");
+        Node.insert(14,"");
         AVLTree.print2D(T1.root);
         AVLTree.print2D(T2.root);
         T2.join(Node.getRoot(), T1);
@@ -54,37 +50,11 @@ public class Tester {
         System.out.println("Bigger than " + splitBy);
         AVLTree.print2D(splits[1].root);
 
-        //rotate testing
-        //AVLTree.print2DUtil(T1.root, 0);
-        //T1.rotateLeft(T1.root);
-        //AVLTree.print2DUtil(T1.root, 0);
-
-        if(!(T1.max() == "snir")){
-            System.out.println("Error in max() \n" +
-                    "prints: " + T1.max() +" should print: snir");
-
-        }
-        if(!(T1.min() == "a")){
-            System.out.println("Error in min() \n" +
-                    "prints: " + T1.min() +" should print: a");
-        }
-
-        AVLTree.print2DUtil(T1.root, 0);
-        System.out.println(Arrays.toString(T1.keysToArray()));
-        T1.delete(2);
-        System.out.println(Arrays.toString(T1.keysToArray()));
-        //T1.root = T1.rotateLeft(T1.getRoot());
-
-        System.out.println("____________");
-        AVLTree.print2DUtil(T1.root, 0);
-
-        T1.printArray(T1.keysToArray());
-        if(!(T1.isEqualkeys(new int[] {1,2,4,6,7,8,9}))){
-            System.out.println("Error in keysToArray");
-        }
-        if(!(T1.infoToArray() == new String[] {"a", "b", "idoamit", "elai", "sapir", "ido", "snir"})){
-            System.out.println("Error in infosToArray");
-        }
+        AVLTree.print2D(splits[1].root);
+        System.out.println(Arrays.toString(splits[1].keysToArray()));
+        splits[1].delete(14);
+        System.out.println(Arrays.toString(splits[1].keysToArray()));
+        AVLTree.print2D(splits[1].root);
 
     }
 }
