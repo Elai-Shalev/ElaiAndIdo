@@ -1,3 +1,7 @@
+package AVL;
+
+import AVL.AVLTree;
+
 import java.util.Arrays;
 
 public class Tester {

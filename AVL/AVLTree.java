@@ -1,3 +1,5 @@
+package AVL;
+
 /**
  *
  * AVLTree
@@ -16,7 +18,7 @@ public class AVLTree {
 	}
 
 	public AVLTree(IAVLNode node){
-		super();
+		this();
 		this.root = node;
 		this.root.setParent(null);
 	}
@@ -501,7 +503,7 @@ public class AVLTree {
 
 	// Wrapper over print2DUtil()
 
-	static void print2DUtil(IAVLNode root, int space)
+	public static void print2DUtil(IAVLNode root, int space)
 	{
 
 		// Base case
@@ -526,7 +528,7 @@ public class AVLTree {
 	}
 
 	// Wrapper over print2DUtil()
-	static void print2D(IAVLNode root)
+	public static void print2D(IAVLNode root)
 	{
 		System.out.println("_______________");
 		// Pass initial space count as 0
@@ -604,14 +606,18 @@ public class AVLTree {
   		private int height;
 		private int size;
 
-  		public AVLNode(int key, String info, IAVLNode parent){
+  		public AVLNode(int key, String info){
 			this.key = key;
 			this.info = info;
-			this.parent = parent;
 			this.height = 0;
 			this.left = AVLTree.this.virtualNode;
 			this.right = AVLTree.this.virtualNode;
 			this.size = 1;
+		}
+
+		public AVLNode(int key, String info, IAVLNode parent){
+			this(key, info);
+			this.parent = parent;
 		}
 
 		public int getKey()
