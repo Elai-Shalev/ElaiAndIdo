@@ -71,7 +71,11 @@ public class AVLTree {
 	}
 
 	public String search(int k) {
-		return searchNode(k).getValue();
+		IAVLNode node = searchNode(k);
+		if (node != null){
+			return node.getValue();
+		}
+		return null;
 	}
 
 	/**
@@ -84,32 +88,42 @@ public class AVLTree {
 	 * Returns -1 if an item with key k already exists in the tree.
 	 */
 	public int insert(int k, String i) {
+		return this.insertNode(new AVLNode(k, i));
+	}
+
+	/**
+	 * private int insertNode(IAVLNode node)
+	 * Helper function for insert. Can be used to insert an existing node, only for internal use, therefore private.
+	 * Function is private in order to prevent an insert of a node with children, which can defy AVLTree invariants
+	*/
+	private int insertNode(IAVLNode node){
 		if (empty()) {
-			this.root = new AVLNode(k, i, null);
+			this.root = node;
 			return 0;
 		}
 		IAVLNode curr = this.root;
-		while ((k < curr.getKey() && curr.getLeft().isRealNode()) ||
-				(k > curr.getKey() && curr.getRight().isRealNode())) {
-			if (k < curr.getKey()) {
+		while ((node.getKey() < curr.getKey() && curr.getLeft().isRealNode()) ||
+				(node.getKey() > curr.getKey() && curr.getRight().isRealNode())) {
+			if (node.getKey() < curr.getKey()) {
 				curr = curr.getLeft();
 			} else {
 				curr = curr.getRight();
 			}
 		}
 
-		if (k == curr.getKey()) {
+		if (node.getKey() == curr.getKey()) {
 			return -1;
 		}
 
-		if (k < curr.getKey()) {
-			curr.setLeft(new AVLNode(k, i, curr));
+		if (node.getKey() < curr.getKey()) {
+			curr.setLeft(node);
 		}
 
-		if (k > curr.getKey()) {
-			curr.setRight(new AVLNode(k, i, curr));
+		if (node.getKey() > curr.getKey()) {
+			curr.setRight(node);
 		}
 
+		node.setParent(curr);
 		return this.rebalance(curr);
 	}
 
@@ -127,7 +141,11 @@ public class AVLTree {
 			return 0;
 		}
 		IAVLNode curr = searchNode(k);
+		if (curr == null){
+			return -1;
+		}
 		IAVLNode succ = null;
+		int plus = 0;
 
 		// Set default node to rebelance after delete - the parent of node k, in case it is a leaf or unary node
 		// If it is a node with 2 children, the node to rebalance would be changed to parent of successor or successor
@@ -155,21 +173,20 @@ public class AVLTree {
 			}
 			else{
 				toRebalance = succ.getParent();
-			}
-
-			if (succ.getRight().isRealNode()) {
-				succ.getParent().setLeft(succ.getRight());
-				succ.getRight().setParent(succ.getParent());
-			}
-			if (succ.getParent().getLeft()==succ){
-				succ.getParent().setLeft(virtualNode);
-			}
-			else{
-				succ.getParent().setRight(virtualNode);
+				if (succ.getRight().isRealNode()) {
+					succ.getParent().setLeft(succ.getRight());
+					succ.getRight().setParent(succ.getParent());
+				}
+				if (succ.getParent().getLeft()==succ){
+					succ.getParent().setLeft(virtualNode);
+				}
+				else{
+					succ.getParent().setRight(virtualNode);
+				}
+				succ.setRight(curr.getRight());
+				curr.getRight().setParent(succ);
 			}
 			succ.setLeft(curr.getLeft());
-			succ.setRight(curr.getRight());
-			curr.getRight().setParent(succ);
 			curr.getLeft().setParent(succ);
 			succ.setParent(curr.getParent());
 			if (curr.getParent() != null) {
@@ -181,6 +198,11 @@ public class AVLTree {
 			}
 			else{
 				this.root = succ;
+			}
+
+			succ.updateHeight();
+			if (succ.getHeight() != curr.getHeight()){
+				plus = 1;
 			}
 		}
 
@@ -203,7 +225,7 @@ public class AVLTree {
 			}
 		}
 
-		return rebalance(toRebalance);
+		return rebalance(toRebalance) + plus;
 	}
 
    public IAVLNode Successor(IAVLNode node) {
@@ -382,9 +404,14 @@ public class AVLTree {
 	*
     */   
    public int join(IAVLNode x, AVLTree t) {
-	   if (empty() || t.empty()) {
-	   	   this.root = x;
-		   return 1;
+	   if (empty()){
+	   	   this.root = t.root;
+	   }
+	   if (t.empty()){
+	   	   x.setLeft(virtualNode);
+	   	   x.setRight(virtualNode);
+	   	   x.setParent(null);
+		   return this.insertNode(x);
 	   }
 	   int valuetoreturn = Math.abs(this.root.getHeight() - t.root.getHeight())+1;
 
@@ -544,16 +571,21 @@ public class AVLTree {
 	public int rebalance(IAVLNode node){
 
 		int numOps = 0;
+		int sizeUpdate;
+		boolean rotated;
 
 		while(node != null){
+			rotated = false;
 			node.updateSize();
-			numOps += node.updateHeight();
+			int heightUpdate = node.updateHeight();
 			if (node.heightDiff() > 1){
 				if (node.getLeft().heightDiff() == -1){
 					this.rotateLeft(node.getLeft());
 					numOps++;
 				}
 				node = this.rotateRight(node);
+				numOps++;
+				rotated = true;
 			}
 			else if (node.heightDiff() < -1){
 				if (node.getRight().heightDiff() == 1){
@@ -561,9 +593,20 @@ public class AVLTree {
 					numOps++;
 				}
 				node = this.rotateLeft(node);
+				numOps++;
+				rotated = true;
+			}
+			if (!rotated && heightUpdate == 1){
+				numOps++;
 			}
 			node = node.getParent();
 		}
+
+		// If tree is empty after rebalance - set root as virtual node
+		if (this.root == null){
+			this.root = virtualNode;
+		}
+
 		return numOps;
 	}
 
