@@ -9,6 +9,13 @@ public class Tester {
     public static void main(String [] args){
 
         AVLTree T1 = new AVLTree();
+        int k = 0;
+        System.out.print("{");
+        while (k<100){
+            k++;
+            System.out.print(k + ", ");
+        }
+        System.out.print("}");
 
 
         T1.insert(2,"a");
