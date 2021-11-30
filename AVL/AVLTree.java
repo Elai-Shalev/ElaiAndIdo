@@ -199,7 +199,6 @@ public class AVLTree {
 				this.root = succ;
 			}
 
-			succ.updateHeight();
 			succ.setRank(curr.getRank());
 		}
 
@@ -510,8 +509,6 @@ public class AVLTree {
 		new_mid.getLeft().setParent(node);
 		new_mid.setLeft(node);
 		node.setParent(new_mid);
-		node.updateHeight();
-		new_mid.updateHeight();
 		if (new_mid.getParent() == null) {
 			this.root = new_mid;
 		}
@@ -543,8 +540,6 @@ public class AVLTree {
 		new_mid.getRight().setParent(node);
 		new_mid.setRight(node);
 		node.setParent(new_mid);
-		node.updateHeight();
-		new_mid.updateHeight();
 		if(new_mid.getParent() == null){
 			this.root = new_mid;
 		}
@@ -689,45 +684,6 @@ public class AVLTree {
 		}
 
 		return numOps;
-
-		/*int numOps = 0;
-		int sizeUpdate;
-		boolean rotated;
-
-		while(node != null){
-			rotated = false;
-			node.updateSize();
-			boolean isPromoteOrDemote = node.updateHeight();
-			if (isPromoteOrDemote){
-				numOps++;
-			}
-			if (node.heightDiff() > 1){
-				if (node.getLeft().heightDiff() == -1){
-					this.rotateLeft(node.getLeft());
-					numOps++;
-				}
-				node = this.rotateRight(node);
-				numOps++;
-				rotated = true;
-			}
-			else if (node.heightDiff() < -1){
-				if (node.getRight().heightDiff() == 1){
-					this.rotateRight(node.getRight());
-					numOps++;
-				}
-				node = this.rotateLeft(node);
-				numOps++;
-				rotated = true;
-			}
-			node = node.getParent();
-		}
-
-		// If tree is empty after rebalance - set root as virtual node
-		if (this.root == null){
-			this.root = virtualNode;
-		}
-
-		return numOps;*/
 	}
 
 	/** 
@@ -746,8 +702,6 @@ public class AVLTree {
 		public boolean isRealNode(); // Returns True if this is a non-virtual AVL node.
     	public void setHeight(int height); // Sets the height of the node.
     	public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
-		public boolean updateHeight(); //Updates the height of the current node based on its children
-		public int heightDiff(); // Returns right child height - left child height;
 		public int getSize(); // Returns size of sub-tree
 		public int getRank(); // Returns rank of node
 		public int getLeftEdgeRank(); // Returns rank diff of right edge
@@ -772,14 +726,12 @@ public class AVLTree {
   		private IAVLNode left;
   		private IAVLNode right;
   		private IAVLNode parent;
-  		private int height;
   		private int rank;
 		private int size;
 
   		public AVLNode(int key, String info){
 			this.key = key;
 			this.info = info;
-			this.height = 0;
 			this.rank = 0;
 			this.left = AVLTree.this.virtualNode;
 			this.right = AVLTree.this.virtualNode;
@@ -828,12 +780,12 @@ public class AVLTree {
 
 		public boolean isRealNode()
 		{
-			return this.height > -1;
+			return this.rank > -1;
 		}
 
-	    public void setHeight(int height)
+	    public void setHeight(int rank)
 	    {
-	      	this.height = height;
+	      	this.rank = rank;
 	    }
 
 	    public int getHeight()
@@ -845,33 +797,9 @@ public class AVLTree {
   			return this.rank;
 		}
 
-	    public int heightDiff(){
-  			return this.left.getHeight() - this.right.getHeight();
-		}
-
 	    public int getLeftEdgeRank(){return this.rank - this.getLeft().getRank();}
 
 		public int getRightEdgeRank(){return this.rank - this.getRight().getRank();}
-
-		public boolean updateHeight() {
-  			boolean isPromoteOrDemote = false;
-  			if (!(((this.getHeight() - this.getLeft().getHeight() == 1) && (this.getHeight() - this.getRight().getHeight() == 1)) ||
-				((this.getHeight() - this.getLeft().getHeight() == 1) && (this.getHeight() - this.getRight().getHeight() == 2)) ||
-				((this.getHeight() - this.getLeft().getHeight() == 2) && (this.getHeight() - this.getRight().getHeight() == 1)))){
-				isPromoteOrDemote = true;
-			}
-  			this.setHeight(Math.max(this.getLeft().getHeight(), this.getRight().getHeight()) + 1);
-  			return isPromoteOrDemote;
-  			/*
-			int leftHeight = this.getLeft().getHeight();
-			int rightHeight = this.getRight().getHeight();
-			int neuheight = Math.max(leftHeight, rightHeight) + 1;
-			if (neuheight != this.getHeight()) {
-				this.setHeight(neuheight);
-				return 1;
-			}
-			return 0;*/
-		}
 
 		public int getSize(){
   			return this.size;
@@ -902,14 +830,8 @@ public class AVLTree {
 	public class ExternalLeaf extends AVLNode {
 		public ExternalLeaf() {
 			super(-1, null, null);
-			this.setHeight(-1);
 			super.rank = -1;
 			super.size = 0;
-		}
-
-		@Override
-		public int heightDiff() {
-			return 0;
 		}
 	}
 
