@@ -51,16 +51,22 @@ public class AVLTree {
 	 * Complexity: O(log(n))
 	 */
 	public IAVLNode searchNode(int k) {
+		// Uses BST properties to find node
+		// Iteratively traverses through tree
 		IAVLNode curr = this.root;
 		while (curr.isRealNode()) {
+			// If current Node Key equals k, we found requested node. returns node
 			if (k == curr.getKey()) {
 				return curr;
+			// If key is smaller than current node, go left
 			} else if (k < curr.getKey()) {
 				curr = curr.getLeft();
+			// If key is bigger than current node, go right
 			} else {
 				curr = curr.getRight();
 			}
 		}
+		// Reaches here only if node is not in tree, in which case returns null
 		return null;
 	}
 
@@ -72,10 +78,13 @@ public class AVLTree {
 	 * Complexity: O(log(n))
 	 */
 	public String search(int k) {
+		// Calls SearchNode helper function.
 		IAVLNode node = searchNode(k);
+		// If node exists in tree, returns its value
 		if (node != null){
 			return node.getValue();
 		}
+		// Else node does not exist in tree, in which case returns null
 		return null;
 	}
 
@@ -87,10 +96,13 @@ public class AVLTree {
 	 * Complexity: O(log(n))
 	 */
 	private int insertNode(IAVLNode node){
+		// Uses BST properties to find node
+		// If tree is empty, sets Tree root as the new node. Returns 0 since no rebalancing ops were made
 		if (empty()) {
 			this.root = node;
 			return 0;
 		}
+		// Else tree is not empty, Iteratively traverses through tree to find insert location
 		IAVLNode curr = this.root;
 		while ((node.getKey() < curr.getKey() && curr.getLeft().isRealNode()) ||
 				(node.getKey() > curr.getKey() && curr.getRight().isRealNode())) {
@@ -101,19 +113,25 @@ public class AVLTree {
 			}
 		}
 
+		// If current key is the same key as node intended for insert then it is already in the tree
+		// Does not insert, returns -1
 		if (node.getKey() == curr.getKey()) {
 			return -1;
 		}
 
+		// If key of new node is smaller than current key, insert as left child to retain BST properties
 		if (node.getKey() < curr.getKey()) {
 			curr.setLeft(node);
 		}
 
+		// If key of new node is bigger than current key, insert as right child to retain BST properties
 		if (node.getKey() > curr.getKey()) {
 			curr.setRight(node);
 		}
 
+		// Set current node as the parent of the new node
 		node.setParent(curr);
+		// Send the current node for rebalancing, and return rebalance function output i.e number of rebalance ops
 		return this.rebalance(curr);
 	}
 
@@ -129,6 +147,8 @@ public class AVLTree {
 	 * Complexity: O(log(n))
 	 */
 	public int insert(int k, String i) {
+		// Create new AVLNode with key k and info i
+		// Send new Node to insertNode function and return its output, i.e. number of rebalancing ops
 		return this.insertNode(new AVLNode(k, i));
 	}
 
@@ -143,20 +163,26 @@ public class AVLTree {
 	 * Complexity: O(log(n))
 	 */
 	public int delete(int k) {
+		// If tree is empty return -1
 		if (empty()) {
 			return -1;
 		}
+		// Get pointer to the requested node
+		// If there is no node with key k in Tree, return -1
 		IAVLNode curr = searchNode(k);
 		if (curr == null){
 			return -1;
 		}
+
+		// Else tree is not empty and node with key k exists in Tree. Node in curr pointer needs to be deleted
+		// Declares and sets successor temporarily as null. Will be used later if deleted node has 2 children
 		IAVLNode succ = null;
 
 		// Set default node to rebalance after delete - the parent of node k, in case it is a leaf or unary node
-		// If it is a node with 2 children, the node to rebalance would be changed to parent of successor or successor
+		// In case of 2 children, the node to rebalance would be later changed to parent of successor or successor
 		IAVLNode toRebalance = curr.getParent();
 
-		//is leaf
+		// If deleted node is leaf
 		if (!curr.getLeft().isRealNode() && !curr.getRight().isRealNode()) {
 			if (curr == this.root){
 				this.root = null;
@@ -168,75 +194,101 @@ public class AVLTree {
 				curr.getParent().setRight(virtualNode);
 			}
 		}
-		//two children
+		// If deleted node has 2 children
 		else if (curr.getLeft().isRealNode() && curr.getRight().isRealNode()) {
+			// Set succ as the successor of current node
 			succ =  Successor(curr);
 
-			// If successor is son of curr, set node to rebalance the as the successor. Otherwise set its parent
+			// If successor is son of curr, set successor as the node to rebalance
 			if (succ.getParent() == curr){
 				toRebalance = succ;
 			}
 			else{
+				// If successor is NOT son of curr, set successor's parent as the node for later rebalancing
 				toRebalance = succ.getParent();
+				// If successor has right child, set it as successor's parent's left child
 				if (succ.getRight().isRealNode()) {
 					succ.getParent().setLeft(succ.getRight());
 					succ.getRight().setParent(succ.getParent());
 				}
+				// If successor is the left child of its parent, set parent left child as virtual Node
 				if (succ.getParent().getLeft()==succ){
 					succ.getParent().setLeft(virtualNode);
 				}
+				// Else successor is the right child of its parent, set parent right child as virtual Node
 				else{
 					succ.getParent().setRight(virtualNode);
 				}
+				// Set deleted node's right child as the new right child of the successor
 				succ.setRight(curr.getRight());
 				curr.getRight().setParent(succ);
 			}
+			// Set deleted node's left child as the new left child of the successor
 			succ.setLeft(curr.getLeft());
 			curr.getLeft().setParent(succ);
+			// Set parent of Deleted Node as parent of successor
 			succ.setParent(curr.getParent());
+			// If deleted node has parent, i.e. it is NOT the Tree root
 			if (curr.getParent() != null) {
+				// If it is the right son of its parent, make the successor as the parent's new right child
 				if (curr.getParent().getRight() == curr) {
 					curr.getParent().setRight(succ);
+				// Else it is the left son of its parent, make the successor as the parent's new left child
 				} else {
 					curr.getParent().setLeft(succ);
 				}
 			}
+			// Else delete node IS the Tree root. Make the Successor the new Tree root
 			else{
 				this.root = succ;
 			}
 
+			// Set the rank of the successor to be the rank of the deleted node, since it replaced it in the Tree
 			succ.setRank(curr.getHeight());
 		}
 
-		//one child
+		// If deleted node has one child, i.e. it is an Unary Node
+		// If deleted node has a right child
 		else if (curr.getRight().isRealNode()) {
+			// Set deleted node right child's parent as the deleted node's parent
 			curr.getRight().setParent(curr.getParent());
+			// If deleted node has parent, i.e. it is NOT the Tree root
 			if (curr.getParent() != null) {
+				// If it is the right son of its parent, set its right child as the new right child of its parent
 				if (curr.getParent().getRight() == curr){
 					curr.getParent().setRight(curr.getRight());
 				}
+				// Else it is the left son of its parent, set its right child as the new left child of its parent
 				else{
 					curr.getParent().setLeft(curr.getRight());
 				}
 			}
+			// Else delete node IS the Tree root. Make the deleted node's right child the new Tree root
 			else{
 				this.root = curr.getRight();
 			}
+		// Else deleted node has a left child
 		} else  {
+			// Set deleted node left child's parent as the deleted node's parent
 			curr.getLeft().setParent(curr.getParent());
+			// If deleted node has parent, i.e. it is NOT the Tree root
 			if (curr.getParent() != null) {
+				// If it is the right son of its parent, set its left child as the new right child of its parent
 				if (curr.getParent().getRight() == curr){
 					curr.getParent().setRight(curr.getLeft());
 				}
+				// Else it is the left son of its parent, set its left child as the new left child of its parent
 				else{
 					curr.getParent().setLeft(curr.getLeft());
 				}
 			}
+			// Else delete node IS the Tree root. Make the deleted node's left child the new Tree root
 			else{
 				this.root = curr.getLeft();
 			}
 		}
 
+		// Sends relevant node for rebalancing. Returns rebalance function output i.e. number of rebalancing ops
 		return rebalance(toRebalance);
 	}
 
@@ -247,19 +299,27 @@ public class AVLTree {
 	 * Complexity: O(log(n))
 	 */
 	public IAVLNode Successor(IAVLNode node) {
+		// If node has a right child
 	   if(node.getRight().isRealNode()){
-		   //minimumleaf
+		   // Find the minimum child in the right child subtree. That is the successor. Returns it.
 		   IAVLNode curr = node.getRight();
 		   while (curr.getLeft().isRealNode()) {
 			   curr = curr.getLeft();
 		   }
 		   return curr;
 	   }
+	   // Else the successor is further up in the Tree.
+	   // Sets succ temporarily as the node's parent
 	   IAVLNode succ = node.getParent();
+	   // While the node is its parent's right child, its parent is smaller than the current node and is not the successor
 	   while(succ.isRealNode() && succ.getRight() == node){
+	   	   // Keep Traversing up the tree
 		   node = succ;
 		   succ = succ.getParent();
 	   }
+	   // Here satisifies the condition that the current node is its parent left child.
+	   // Therefore its parent is bigger hence it is the successor
+	   // Returns succ as the successor
 	   return succ;
    }
 
@@ -311,8 +371,11 @@ public class AVLTree {
    */
   public int[] keysToArray(){
 
-	  int[] keys = new int[size()];
+	  // Initializes new array with the size of the Tree
+  	  int[] keys = new int[size()];
+  	  // Initializes new Array with 1 cell. Used as a "global" parameter for inOrderKeys to insert in correct position
 	  int[] index = new int[]{0};
+	  // Calls inOrderKeys which fills up the keys array, then returns it
 	  inOrderKeys(this.root, keys,index);
 	  return keys;
   }
@@ -323,12 +386,20 @@ public class AVLTree {
 	 * Complexity: O(n))
 	 */
   public static void inOrderKeys (IAVLNode node, int [] keys, int[] index){
+  		// Recursively traverses Tree in-order and fills up the keys array
+
+  		// If node is virtual node, return and do nothing
 		if (!node.isRealNode()) {
 			return;
 		}
+		// Else it is a real node
+	    // Recursive call for node's left child
 		inOrderKeys(node.getLeft(), keys, index);
+		// Insert node key to keys array in the correct position, in index[] array first cell
 		keys[index[0]] = node.getKey();
+		// Increase index by 1 so next node will be inserted in the next position in the array
 		index[0]++;
+	    // Recursive call for node's right child
 		inOrderKeys(node.getRight(), keys, index);
 	}
 
@@ -343,8 +414,11 @@ public class AVLTree {
    */
   public String[] infoToArray()
   {
-	  String[] values = new String[size()];
+	  // Initializes new array with the size of the Tree
+  	  String[] values = new String[size()];
+	  // Initializes new Array with 1 cell. Used as a "global" parameter for inOrderKeys to insert in correct position
 	  int[] index = new int[]{0};
+	  // Calls inOrderVals which fills up the values array, then returns it
 	  inOrderVals(this.root, values ,index);
 	  return values;
   }
@@ -355,12 +429,20 @@ public class AVLTree {
 	 * Complexity: O(n))
 	 */
 	public static void inOrderVals (IAVLNode node, String [] values, int[] index){
+		// Recursively traverses Tree in-order and fills up the values array
+
+		// If node is virtual node, return and do nothing
 		if (!node.isRealNode()) {
 			return;
 		}
+		// Else it is a real node
+		// Recursive call for node's left child
 		inOrderVals(node.getLeft(), values, index);
+		// Insert node info to values array in the correct position, in index[] array first cell
 		values[index[0]] = node.getValue();
+		// Increase index by 1 so next node will be inserted in the next position in the array
 		index[0]++;
+		// Recursive call for node's right child
 		inOrderVals(node.getRight(), values, index);
 	}
 
