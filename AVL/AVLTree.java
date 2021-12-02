@@ -485,35 +485,61 @@ public class AVLTree {
     */   
    public AVLTree[] split(int x)
    {
-	   IAVLNode curr = this.searchNode(x);
+	   // Searches tree to get pointer to node with key x
+   	   IAVLNode curr = this.searchNode(x);
 
-	   AVLTree t1 = new AVLTree(curr.getLeft());
-	   curr.setLeft(virtualNode);
+	   // Declares new AVL Tree t1 - this Tree will sustain for every node m in t1, m.key < x
+   	   AVLTree t1 = new AVLTree(curr.getLeft());
+	   // Declares new AVL Tree t2 - this Tree will sustain for every node m in t2, m.key > x
 	   AVLTree t2 = new AVLTree(curr.getRight());
+
+	   // Disconnect node x from its children and parent
+	   curr.setLeft(virtualNode);
 	   curr.setRight(virtualNode);
 	   IAVLNode parent = curr.getParent();
 	   curr.setParent(null);
+
+	   // Declare new Tree toJoin. In every iteration will point to the Tree being joined to either t1 or t2
 	   AVLTree toJoin;
 
+	   // While we haven't yet reached root
 	   while(parent != null){
+	   		// If node is the right son of its parent, i.e. node key is bigger than parent key
 	   		if (parent.getRight() == curr){
+	   			// subTree to join is the left son of parent
 	   			toJoin = new AVLTree(parent.getLeft());
 	   			parent.setLeft(virtualNode);
+
+	   			// Set curr as parent and parent as next parent to keep traversing up the tree to the root
 	   			curr = parent;
 	   			parent = curr.getParent();
 	   			curr.setParent(null);
+
+	   			// Join t1 with toJoin and curr (now the parent)
 	   			t1.join(curr, toJoin);
 			}
+	   		// Else node is the left son of its parent, i.e. node key is smaller than parent key
 	   		else{
+				// subTree to join is the right son of parent
 				toJoin = new AVLTree(parent.getRight());
 				parent.setRight(virtualNode);
+				// Set curr as parent and parent as next parent to keep traversing up the tree to the root
 				curr = parent;
 				parent = curr.getParent();
 				curr.setParent(null);
+
+				// Join t2 with toJoin and curr (now the parent)
 				t2.join(curr, toJoin);
 			}
 	   }
+
+	   // Sets root of old tree as the root of t1
+	   // ** NOTE **
+	   // The old tree root MUST be changed since the Tree sent to this function no longer exists as a valid AVL tree
+	   // Our choice is ARBITRARY. The root of the old tree could alternatively be pointed to t2 or null.
 	   this.root = t1.root;
+
+	   // Returns a list of the 2 trees
 	   return new AVLTree[]{t1, t2};
    }
    
@@ -526,29 +552,41 @@ public class AVLTree {
 	* precondition: keys(t) < x < keys() or keys(t) > x > keys(). t/tree might be empty (rank = -1).
     * postcondition: none
 	*
-	* Complexity: O(log(M)) where M = max{this.size(), t.size()}
+	* Complexity: O(|this.rank - t.rank| + 1)
     */   
    public int join(IAVLNode x, AVLTree t) {
+   	   // If one of the trees is empty
    	   if (empty() || t.empty()){
+   	   	   // Disconnect x from its children and parents
 		   x.setLeft(virtualNode);
 		   x.setRight(virtualNode);
 		   x.setParent(null);
 		   x.setRank(0);
+
+		   // If this Tree is empty
 		   if (empty()){
+		   	   // Insert node x to t tree and change this root's pointer to t's root
 			   t.insertNode(x);
 			   this.root = t.root;
 		   }
+		   // Else t is empty
 		   else{
+		   	   // Insert node x to this tree
 			   this.insertNode(x);
 		   }
+		   // Send x for rebalancing
 		   this.rebalance(x);
+		   // Return complexity of the operation - In this case it is the height of the NOT EMPTY tree + 1
 		   return Math.max(this.root.getHeight(), t.root.getHeight()) + 1;
 	   }
 
-	   int valuetoreturn = Math.abs(this.root.getHeight() - t.root.getHeight())+1;
+	   // Else neither tree is empty. Value to return is the complexity (|tree.rank - t.rank| + 1)
+   	   int valuetoreturn = Math.abs(this.root.getHeight() - t.root.getHeight())+1;
 
 	   AVLTree smaller, bigger;
 
+	   // Set smaller to point to the tree who's keys are smaller that the other tree
+	   // Set bigger to point to the tree who's keys are bigger than the other tree
 	   if (this.root.getKey() < x.getKey()){
 	   		smaller = this;
 	   		bigger = t;
@@ -559,46 +597,71 @@ public class AVLTree {
 	   }
 
 	   IAVLNode curr;
+	   // If Height of smaller is shorter than bigger
 	   if (smaller.root.getHeight() <= bigger.root.getHeight()){
-	   		// Height of smaller is shorter than bigger
+	   		// In this case, traverse along the left side of the trees with bigger keys
 	   		curr = bigger.root;
+	   		// while current rank is bigger than the smaller's root rank, keep going left
 	   		while ((curr.getLeft().isRealNode()) && (curr.getHeight() > smaller.root.getHeight())){
 	   			curr = curr.getLeft();
 			}
+	   		// Set smaller's root as x's left child
 	   		x.setLeft(smaller.root);
-	   		x.setRight(curr);
 		    smaller.root.setParent(x);
+	   		// Set current node as x's right child
+	   		x.setRight(curr);
+		    // Set x's rank as 1 higher than smaller's root
 		    x.setRank(smaller.root.getHeight() + 1);
+
+		    // If curr is NOT this tree's root
 		    if (curr.getParent() != null) {
+		    	// Set x as the new left child of curr's parent
 				curr.getParent().setLeft(x);
+				// Set the current root as bigger's root, since bigger is the taller tree
 				this.root = bigger.root;
 			}
+		    // Else curr IS this tree's root
 	   		else{
+	   			// Set x as the new tree root, since it is now the parent of the old root
 	   			this.root = x;
 			}
 	   }
+	   // Else Height of smaller is longer than bigger
 	   else{
-		   // Height of smaller is longer than bigger
+		   // In this case, traverse along the right side of the trees with smaller keys
 		   curr = smaller.root;
-		   while ((curr.getRight().isRealNode()) && (curr.getHeight() > smaller.root.getHeight())){
+		   // while current rank is bigger than the bigger's root rank, keep going right
+		   while ((curr.getRight().isRealNode()) && (curr.getHeight() > bigger.root.getHeight())){
 			   curr = curr.getRight();
 		   }
+		   // Set bigger's root as x's right child
 		   x.setRight(bigger.root);
-		   x.setLeft(curr);
 		   bigger.root.setParent(x);
+		   // Set current node as x's left child
+		   x.setLeft(curr);
+		   // Set x's rank as 1 higher than bigger's root
 		   x.setRank(bigger.root.getHeight() + 1);
+
+		   // If curr is NOT this tree's root
 		   if (curr.getParent() != null){
+			   // Set x as the new right child of curr's parent
 			   curr.getParent().setRight(x);
+			   // Set the current root as smaller's root, since smaller is the taller tree
 			   this.root = smaller.root;
 		   }
+		   // Else curr IS this tree's root
 		   else{
+			   // Set x as the new tree root, since it is now the parent of the old root
 		   	   this.root = x;
 		   }
 	   }
+	   // Set x's parent as curr's parent, and curr's parent as x
 	   x.setParent(curr.getParent());
 	   curr.setParent(x);
 
+	   // Send x for rebalancing
 	   this.rebalance(x);
+	   // Return operation complexity
 	   return valuetoreturn;
 
    }
