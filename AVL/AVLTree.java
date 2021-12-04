@@ -801,31 +801,45 @@ public class AVLTree {
 			// Update size of node, as its size may have changed due to insertion / deletion / rotation
 			node.updateSize();
 
-			// Cases Relevant for after Insertion
+			// Cases Relevant for after Insertion or Join
 			if (((node.getLeftEdgeRank() == 0) && (node.getRightEdgeRank() == 1)) ||
 				((node.getLeftEdgeRank() == 1) && (node.getRightEdgeRank() == 0))){
 				node.promote();
 				numOps++;
 			}
 			else if ((node.getLeftEdgeRank() == 0) && (node.getRightEdgeRank() == 2)){
-				if ((node.getLeft().getLeftEdgeRank() == 2) && (node.getLeft().getRightEdgeRank() == 1)){
-					node.getLeft().demote();
-					node.getLeft().getRight().promote();
-					this.rotateLeft(node.getLeft());
-					numOps += 3;
+				// Relevant for Join
+				if ((node.getLeft().getLeftEdgeRank() == 1) && (node.getLeft().getRightEdgeRank() == 1)){
+					node.getLeft().promote();
 				}
-				node.demote();
+				// Relevant for Insert
+				else {
+					if ((node.getLeft().getLeftEdgeRank() == 2) && (node.getLeft().getRightEdgeRank() == 1)) {
+						node.getLeft().demote();
+						node.getLeft().getRight().promote();
+						this.rotateLeft(node.getLeft());
+						numOps += 3;
+					}
+					node.demote();
+				}
 				node = this.rotateRight(node);
 				numOps += 2;
 			}
 			else if ((node.getLeftEdgeRank() == 2) && (node.getRightEdgeRank() == 0)){
-				if ((node.getRight().getLeftEdgeRank() == 1) && (node.getRight().getRightEdgeRank() == 2)){
-					node.getRight().demote();
-					node.getRight().getLeft().promote();
-					this.rotateRight(node.getRight());
-					numOps += 3;
+				// Relevant for Join
+				if ((node.getRight().getLeftEdgeRank() == 1) && (node.getRight().getRightEdgeRank() == 1)){
+					node.getRight().promote();
 				}
-				node.demote();
+				// Relevant for Insert
+				else {
+					if ((node.getRight().getLeftEdgeRank() == 1) && (node.getRight().getRightEdgeRank() == 2)) {
+						node.getRight().demote();
+						node.getRight().getLeft().promote();
+						this.rotateRight(node.getRight());
+						numOps += 3;
+					}
+					node.demote();
+				}
 				node = this.rotateLeft(node);
 				numOps += 2;
 			}
