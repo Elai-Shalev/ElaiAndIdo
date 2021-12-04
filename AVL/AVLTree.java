@@ -674,14 +674,17 @@ public class AVLTree {
 	 *  Complexity: O(1)
 	 */
 	public IAVLNode rotateLeft(IAVLNode node) {
+		// If node is virtual node or does not have a real right child, cannot rotate left. Returns same node
 		if (!node.isRealNode()) {
 			return node;
 		}
 		if (!node.getRight().isRealNode()) {
 			return node;
 		}
+		// Declare new root of sub-tree after rotation - the right child of the rotated node
 		IAVLNode new_mid = node.getRight();
 		new_mid.setParent(node.getParent());
+		// If rotated node is NOT the tree root, i.e. has a parent, set the new root of subtree to be its new child
 		if (node.getParent() != null) {
 			if (node.getParent().getLeft() == node) {
 				node.getParent().setLeft(new_mid);
@@ -689,15 +692,19 @@ public class AVLTree {
 				node.getParent().setRight(new_mid);
 			}
 		}
+		// Change children pointers according to Rotation Algorithm
 		node.setRight(new_mid.getLeft());
 		new_mid.getLeft().setParent(node);
 		new_mid.setLeft(node);
 		node.setParent(new_mid);
+		// If new root of sub-tree has no parent, then it is the new root of the entire tree
 		if (new_mid.getParent() == null) {
 			this.root = new_mid;
 		}
+		// Update sizes of node that changed positions in the tree and their sizes may have changed
 		node.updateSize();
 		new_mid.updateSize();
+		// Return new root of sub-tree after the rotation
 		return new_mid;
 	}
 
@@ -709,11 +716,13 @@ public class AVLTree {
 	 *  Complexity: O(1)
 	 */
 	public IAVLNode rotateRight(IAVLNode node) {
+		// If node is virtual node or does not have a real left child, cannot rotate right. Returns same node
 		if(!node.isRealNode()){ return node;}
 		if(!node.getLeft().isRealNode()){ return node;}
+		// Declare new root of sub-tree after rotation - the left child of the rotated node
 		IAVLNode new_mid = node.getLeft();
-
 		new_mid.setParent(node.getParent());
+		// If rotated node is NOT the tree root, i.e. has a parent, set the new root of subtree to be its new child
 		if(node.getParent()!=null) {
 			if (node.getParent().getLeft() == node) {
 				node.getParent().setLeft(new_mid);
@@ -721,16 +730,19 @@ public class AVLTree {
 				node.getParent().setRight(new_mid);
 			}
 		}
-
+		// Change children pointers according to Rotation Algorithm
 		node.setLeft(new_mid.getRight());
 		new_mid.getRight().setParent(node);
 		new_mid.setRight(node);
 		node.setParent(new_mid);
+		// If new root of sub-tree has no parent, then it is the new root of the entire tree
 		if(new_mid.getParent() == null){
 			this.root = new_mid;
 		}
+		// Update sizes of node that changed positions in the tree and their sizes may have changed
 		node.updateSize();
 		new_mid.updateSize();
+		// Return new root of sub-tree after the rotation
 		return new_mid;
 	}
 
@@ -781,11 +793,15 @@ public class AVLTree {
 	 */
 	public int rebalance(IAVLNode node){
 
+		// Initiate counter for number of rebalancing operations
 		int numOps = 0;
 
+		// While we have not yet reached the top of the tree, perform the following
 		while(node != null){
+			// Update size of node, as its size may have changed due to insertion / deletion / rotation
 			node.updateSize();
-			// After Insertion
+
+			// Cases Relevant for after Insertion
 			if (((node.getLeftEdgeRank() == 0) && (node.getRightEdgeRank() == 1)) ||
 				((node.getLeftEdgeRank() == 1) && (node.getRightEdgeRank() == 0))){
 				node.promote();
@@ -813,7 +829,8 @@ public class AVLTree {
 				node = this.rotateLeft(node);
 				numOps += 2;
 			}
-			// After Deletion
+
+			// Cases Relevant for after Deletion
 			else if ((node.getLeftEdgeRank() == 2) && (node.getRightEdgeRank() == 2)){
 				node.demote();
 				numOps++;
@@ -865,6 +882,7 @@ public class AVLTree {
 				}
 			}
 
+			// Change node pointer to its parent to continue traversing up the tree towards the root
 			node = node.getParent();
 		}
 
