@@ -687,7 +687,7 @@ public class AVLTree {
 		if (new_mid.getParent() == null) {
 			this.root = new_mid;
 		}
-		// Update sizes of node that changed positions in the tree and their sizes may have changed
+		// Update fields of node that changed positions in the tree and their fields may have changed
 		node.updateFields();
 		new_mid.updateFields();
 		// Return new root of sub-tree after the rotation
@@ -725,7 +725,7 @@ public class AVLTree {
 		if(new_mid.getParent() == null){
 			this.root = new_mid;
 		}
-		// Update sizes of node that changed positions in the tree and their sizes may have changed
+		// Update fields of node that changed positions in the tree and their fields may have changed
 		node.updateFields();
 		new_mid.updateFields();
 		// Return new root of sub-tree after the rotation
@@ -784,7 +784,7 @@ public class AVLTree {
 
 		// While we have not yet reached the top of the tree, perform the following
 		while(node != null){
-			// Update size of node, as its size may have changed due to insertion / deletion / rotation
+			// Update fields of node, as its fields may have changed due to insertion / deletion / rotation
 			node.updateFields();
 
 			// Cases Relevant for after Insertion or Join
