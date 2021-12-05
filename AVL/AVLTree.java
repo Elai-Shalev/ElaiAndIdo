@@ -332,14 +332,7 @@ public class AVLTree {
     */
    public String min()
    {
-	   if (empty()){
-	   		return null;
-	   }
-   	   IAVLNode x = this.root;
-	   while (x.getLeft().isRealNode()){
-	   		x = x.getLeft();
-	   }
-	   return x.getValue();
+	   return this.root.getMin().getValue();
    }
 
    /**
@@ -351,14 +344,7 @@ public class AVLTree {
     */
    public String max()
    {
-	   if(this.empty()){
-		   return null;
-	   }
-	   IAVLNode curr = this.root;
-	   while(curr.getRight().isRealNode()){
-		   curr = curr.getRight();
-	   }
-	   return curr.getValue();
+	   return this.root.getMax().getValue();
    }
 
   /**
@@ -702,8 +688,8 @@ public class AVLTree {
 			this.root = new_mid;
 		}
 		// Update sizes of node that changed positions in the tree and their sizes may have changed
-		node.updateSize();
-		new_mid.updateSize();
+		node.updateFields();
+		new_mid.updateFields();
 		// Return new root of sub-tree after the rotation
 		return new_mid;
 	}
@@ -740,8 +726,8 @@ public class AVLTree {
 			this.root = new_mid;
 		}
 		// Update sizes of node that changed positions in the tree and their sizes may have changed
-		node.updateSize();
-		new_mid.updateSize();
+		node.updateFields();
+		new_mid.updateFields();
 		// Return new root of sub-tree after the rotation
 		return new_mid;
 	}
@@ -799,7 +785,7 @@ public class AVLTree {
 		// While we have not yet reached the top of the tree, perform the following
 		while(node != null){
 			// Update size of node, as its size may have changed due to insertion / deletion / rotation
-			node.updateSize();
+			node.updateFields();
 
 			// Cases Relevant for after Insertion or Join
 			if (((node.getLeftEdgeRank() == 0) && (node.getRightEdgeRank() == 1)) ||
@@ -930,6 +916,11 @@ public class AVLTree {
 		public void promote(); // promotes node rank
 		public void demote(); // demotes node rank
 		public void setRank(int rank); // setsRank
+		public IAVLNode getMin();
+		public IAVLNode getMax();
+		public void updateMin();
+		public void updateMax();
+		public void updateFields();
 	}
 
    /** 
@@ -948,6 +939,8 @@ public class AVLTree {
   		private IAVLNode parent;
   		private int rank;
 		private int size;
+		private IAVLNode minNode;
+		private IAVLNode maxNode;
 
 	   /**
 		* public AVLNode(int key, String info)
@@ -964,6 +957,8 @@ public class AVLTree {
 			this.left = AVLTree.this.virtualNode;
 			this.right = AVLTree.this.virtualNode;
 			this.size = 1;
+			this.minNode = this;
+			this.maxNode = this;
 		}
 
 	   /**
@@ -1125,6 +1120,34 @@ public class AVLTree {
 	    public void setRank(int rank){
   			this.rank = rank;
 	   }
+
+	    public IAVLNode getMin(){return this.minNode;}
+
+	    public IAVLNode getMax(){return this.maxNode;}
+
+	    public void updateMin(){
+	    	if (this.left.isRealNode()){
+	    		this.minNode = this.left.getMin();
+			}
+	    	else{
+	    		this.minNode = this;
+			}
+	    }
+
+	    public void updateMax(){
+			if (this.right.isRealNode()){
+				this.maxNode = this.right.getMax();
+			}
+			else{
+				this.maxNode = this;
+			}
+	    }
+
+	    public void updateFields(){
+	    	this.updateMin();
+	    	this.updateMax();
+	    	this.updateSize();
+		}
   }
 
 	/**
