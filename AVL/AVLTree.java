@@ -328,7 +328,8 @@ public class AVLTree {
     *
     * Returns the info of the item with the smallest key in the tree,
     * or null if the tree is empty.
-	* Complexity: O(log(n))
+	* Uses pointer to minimum node in sub-tree of root, which is the minimum node in the entire tree, saved in root.
+	* Complexity: O(1)
     */
    public String min()
    {
@@ -340,7 +341,8 @@ public class AVLTree {
     *
     * Returns the info of the item with the largest key in the tree,
     * or null if the tree is empty.
-	* Complexity: O(log(n))
+	* Uses pointer to maximum node in sub-tree of root, which is the maximum node in the entire tree, saved in root.
+	* Complexity: O(1)
     */
    public String max()
    {
@@ -1121,10 +1123,25 @@ public class AVLTree {
   			this.rank = rank;
 	   }
 
+	   /**
+		* public IAVLNode getMin()
+		* Returns pointer to minimum node in sub-tree
+		* Complexity: O(1)
+		*/
 	    public IAVLNode getMin(){return this.minNode;}
 
+	   /**
+		* public IAVLNode getMax()
+		* Returns pointer to maximum node in sub-tree
+		* Complexity: O(1)
+		*/
 	    public IAVLNode getMax(){return this.maxNode;}
 
+	   /**
+		* public void updateMin()
+		* updates minimum node in subtree, including node, based on its direct children.
+		* Complexity: O(1)
+		*/
 	    public void updateMin(){
 	    	if (this.left.isRealNode()){
 	    		this.minNode = this.left.getMin();
@@ -1134,6 +1151,11 @@ public class AVLTree {
 			}
 	    }
 
+	   /**
+		* public void updateMax()
+		* updates maximum node in subtree, including node, based on its direct children.
+		* Complexity: O(1)
+		*/
 	    public void updateMax(){
 			if (this.right.isRealNode()){
 				this.maxNode = this.right.getMax();
@@ -1143,6 +1165,11 @@ public class AVLTree {
 			}
 	    }
 
+	   /**
+		* public void updateFields()
+		* updates min, max and size fields based on children using existing funcs
+		* Complexity: O(1)
+		*/
 	    public void updateFields(){
 	    	this.updateMin();
 	    	this.updateMax();
