@@ -1,5 +1,3 @@
-package AVL;
-
 /**
  *
  * AVLTree
@@ -13,7 +11,6 @@ public class AVLTree {
 	// All sons of real leaves will be this single virtual node, for the sake of memory saving
 	private final ExternalLeaf virtualNode = new ExternalLeaf();
 	public IAVLNode root;
-	static final int COUNT = 10;
 
 	/**
 	 * public AVLTree()
@@ -734,42 +731,6 @@ public class AVLTree {
 		return new_mid;
 	}
 
-
-	// Wrapper over print2DUtil()
-
-	public static void print2DUtil(IAVLNode root, int space)
-	{
-
-		// Base case
-		if (!root.isRealNode())
-			return;
-
-		// Increase distance between levels
-		space += COUNT;
-
-		// Process right child first
-		print2DUtil(root.getRight(), space);
-
-		// Print current node after space
-		// count
-		System.out.print("\n");
-		for (int i = COUNT; i < space; i++)
-			System.out.print(" ");
-		System.out.print(root.getKey() + "\n");
-
-		// Process left child
-		print2DUtil(root.getLeft(), space);
-	}
-
-	// Wrapper over print2DUtil()
-	public static void print2D(IAVLNode root)
-	{
-		System.out.println("_______________");
-		// Pass initial space count as 0
-
-		print2DUtil(root, 0);
-	}
-
 	/**
 	 *  public int rebalance(IAVLNode node)
 	 *
@@ -910,7 +871,8 @@ public class AVLTree {
 		public void setParent(IAVLNode node); // Sets parent.
 		public IAVLNode getParent(); // Returns the parent, if there is no parent return null.
 		public boolean isRealNode(); // Returns True if this is a non-virtual AVL node.
-    	public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
+    	public void setHeight(int height); // Sets the height of the node.
+		public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
 		public int getSize(); // Returns size of sub-tree
 		public int getLeftEdgeRank(); // Returns rank diff of right edge
 		public int getRightEdgeRank(); // Returns rank diff of left edge
@@ -918,11 +880,11 @@ public class AVLTree {
 		public void promote(); // promotes node rank
 		public void demote(); // demotes node rank
 		public void setRank(int rank); // setsRank
-		public IAVLNode getMin();
-		public IAVLNode getMax();
-		public void updateMin();
-		public void updateMax();
-		public void updateFields();
+		public IAVLNode getMin(); // Returns minimum node of rooted sub-tree
+		public IAVLNode getMax(); // Returns maximum node of rooted sub-tree
+		public void updateMin(); // Updates minimum node of rooted sub-tree based on direct children
+		public void updateMax(); // Updates maximum node of rooted sub-tree based on direct children
+		public void updateFields(); // Updates min, max and size fields of node
 	}
 
    /** 
@@ -1053,6 +1015,16 @@ public class AVLTree {
 		{
 			return this.rank > -1;
 		}
+
+	   /**
+		* public void setHeight()
+		* Sets the Height (rank) of node
+		* Complexity: O(1)
+		*/
+	    public void setHeight(int height)
+	   {
+		   this.rank = height;
+	   }
 
 	   /**
 		* public int getHeight()
