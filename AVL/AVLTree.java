@@ -1,4 +1,16 @@
 /**
+ * Student 1:
+ * Name: Ido Meshulam
+ * ID: 208825521
+ * Username: idomeshulam@mail.tau.ac.il
+ *
+ * Student 2:
+ * Name: Elai Shalev
+ * ID: 319027421
+ * Username: elaishalev@mail.tau.ac.il
+ */
+
+/**
  *
  * AVLTree
  *
