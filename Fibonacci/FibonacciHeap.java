@@ -1,3 +1,5 @@
+package Fibonacci;
+
 /**
  * FibonacciHeap
  *
@@ -171,16 +173,30 @@ public class FibonacciHeap
     * (for example HeapNode), do it in this file, not in another file. 
     *  
     */
-    public static class HeapNode{
+    public static class HeapNode {
 
-    	public int key;
+       public int key;
+       public int rank;
+       public boolean marked;
+       public HeapNode child;
+       public HeapNode next;
+       public HeapNode prev;
+       public HeapNode parent;
 
-    	public HeapNode(int key) {
-    		this.key = key;
-    	}
+       //constructor
+       public HeapNode(int key) {
+           this.key = key;
+       }
 
-    	public int getKey() {
-    		return this.key;
-    	}
-    }
+       public int getKey() {
+           return this.key;
+       }
+       public int getRank() {return rank;};
+       public boolean isMarked(){ return this.marked;}
+       public HeapNode getChild(){ return this.child;}
+       public HeapNode getNext(){ return this.next;}
+       public HeapNode getPrev(){ return this.prev;}
+       public HeapNode getParent(){ return this.parent;}
+
+   }
 }
