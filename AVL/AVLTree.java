@@ -411,7 +411,7 @@ public class AVLTree {
 	/**
 	 * public static void inOrderVals
 	 * Helper Recursion function for infoToArray. Traverses tree In-Order and adds values to values[] array
-	 * Complexity: O(n))
+	 * Complexity: O(n)
 	 */
 	public static void inOrderVals (IAVLNode node, String [] values, int[] index){
 		// Recursively traverses Tree in-order and fills up the values array
