@@ -1,4 +1,16 @@
 /**
+ * Student 1:
+ * Name: Ido Meshulam
+ * ID: 208825521
+ * Username: idomeshulam@mail.tau.ac.il
+ *
+ * Student 2:
+ * Name: Elai Shalev
+ * ID: 319027421
+ * Username: elaishalev@mail.tau.ac.il
+ */
+
+/**
  *
  * AVLTree
  *
@@ -241,7 +253,7 @@ public class AVLTree {
 			}
 
 			// Set the rank of the successor to be the rank of the deleted node, since it replaced it in the Tree
-			succ.setRank(curr.getHeight());
+			succ.setHeight(curr.getHeight());
 		}
 
 		// If deleted node has one child, i.e. it is an Unary Node
@@ -546,7 +558,7 @@ public class AVLTree {
 		   x.setLeft(virtualNode);
 		   x.setRight(virtualNode);
 		   x.setParent(null);
-		   x.setRank(0);
+		   x.setHeight(0);
 
 		   // If this Tree is empty
 		   if (empty()){
@@ -596,7 +608,7 @@ public class AVLTree {
 	   		// Set current node as x's right child
 	   		x.setRight(curr);
 		    // Set x's rank as 1 higher than smaller's root
-		    x.setRank(smaller.root.getHeight() + 1);
+		    x.setHeight(smaller.root.getHeight() + 1);
 
 		    // If curr is NOT this tree's root
 		    if (curr.getParent() != null) {
@@ -625,7 +637,7 @@ public class AVLTree {
 		   // Set current node as x's left child
 		   x.setLeft(curr);
 		   // Set x's rank as 1 higher than bigger's root
-		   x.setRank(bigger.root.getHeight() + 1);
+		   x.setHeight(bigger.root.getHeight() + 1);
 
 		   // If curr is NOT this tree's root
 		   if (curr.getParent() != null){
@@ -879,7 +891,6 @@ public class AVLTree {
 		public void updateSize(); // Updates size of tree: left.size + right.size + 1
 		public void promote(); // promotes node rank
 		public void demote(); // demotes node rank
-		public void setRank(int rank); // setsRank
 		public IAVLNode getMin(); // Returns minimum node of rooted sub-tree
 		public IAVLNode getMax(); // Returns maximum node of rooted sub-tree
 		public void updateMin(); // Updates minimum node of rooted sub-tree based on direct children
@@ -1084,15 +1095,6 @@ public class AVLTree {
 		*/
 		public void demote(){
 		   this.rank--;
-	   }
-
-	   /**
-		* public void setRank(int rank)
-		* Sets tree rank
-		* Complexity: O(1)
-		*/
-	    public void setRank(int rank){
-  			this.rank = rank;
 	   }
 
 	   /**
