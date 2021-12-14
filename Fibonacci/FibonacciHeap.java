@@ -7,6 +7,12 @@ package Fibonacci;
  */
 public class FibonacciHeap
 {
+    public int size;
+    public HeapNode min;
+    public HeapNode first;
+    public int marked;
+    public int totalCuts;
+    public int totalLinks;
 
    /**
     * public boolean isEmpty()
