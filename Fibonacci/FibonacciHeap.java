@@ -199,6 +199,23 @@ public class FibonacciHeap
     public static int[] kMin(FibonacciHeap H, int k)
     {    
         int[] arr = new int[100];
+        /*
+        Debugging
+         */
+        BinaryHeap heap = new BinaryHeap();
+        heap.insert(5);
+        heap.insert(2);
+        heap.insert(3);
+        heap.insert(9);
+        heap.insert(10);
+        heap.insert(1);
+        heap.insert(4);
+        heap.insert(8);
+        heap.insert(7);
+        heap.insert(6);
+        for (int i = 0 ; i < 10; i++){
+            System.out.println(heap.deleteMin());
+        }
         return arr; // should be replaced by student code
     }
 
@@ -267,6 +284,78 @@ public class FibonacciHeap
         }
         a.linkLeft(b);
         return a;
+    }
+
+    /**
+     * public static class BinaryHeap
+     */
+
+    public static class BinaryHeap {
+        public int[] arr = new int[2];
+        public int size = 0;
+
+        public void insert(int k){
+            this.size++;
+            this.arr[this.size] = k;
+            this.HeapifyUp(this.size);
+            this.checkAndDouble();
+        }
+
+        public int getMin(){
+            return this.arr[1];
+        }
+
+        public int deleteMin(){
+            int min = this.arr[1];
+            this.arr[1] = this.arr[size];
+            this.size--;
+            this.HeapifyDown(1);
+            return min;
+        }
+
+        public void HeapifyUp(int i){
+            while (i > 1 & this.arr[i / 2] > this.arr[i]){
+                this.SwitchIdxs(i / 2, i);
+                i = i / 2;
+            }
+        }
+
+        public void HeapifyDown(int i){
+            while ((i * 2 < size & this.arr[i * 2] < this.arr[i]) ||
+                   (i * 2 + 1 < size & this.arr[i * 2 + 1] < this.arr[i])){
+                if (i * 2 < size && i * 2 + 1 < size){
+                    int smallest = Math.min(this.arr[i * 2], this.arr[i * 2 + 1]);
+                    if (this.arr[i * 2] == smallest){
+                        this.SwitchIdxs(i * 2, i);
+                        i = i * 2;
+                    }
+                }
+                if (i * 2 < size & this.arr[i * 2] < this.arr[i]){
+                    this.SwitchIdxs(i * 2, i);
+                    i = i * 2;
+                }
+                else{
+                    this.SwitchIdxs(i * 2 + 1, i);
+                    i = i * 2 + 1;
+                }
+            }
+        }
+
+        public void SwitchIdxs(int i, int j){
+            int temp = this.arr[i];
+            this.arr[i] = this.arr[j];
+            this.arr[j] = temp;
+        }
+
+        public void checkAndDouble(){
+            if (this.size + 1 == this.arr.length){
+                int[] newArr = new int[this.arr.length * 2];
+                for (int i = 1; i <= size; i++){
+                    newArr[i] = arr[i];
+                }
+                this.arr = newArr;
+            }
+        }
     }
 
     /**
