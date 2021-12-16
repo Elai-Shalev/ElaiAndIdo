@@ -7,7 +7,7 @@ package Fibonacci;
  */
 public class FibonacciHeap
 {
-    public int size;
+    public int size = 0;
     public HeapNode min;
     public HeapNode first;
     public int marked;
@@ -22,7 +22,7 @@ public class FibonacciHeap
     */
     public boolean isEmpty()
     {
-    	return false; // should be replaced by student code
+    	return size == 0;
     }
 		
    /**
@@ -82,7 +82,16 @@ public class FibonacciHeap
     {
     	return -123; // should be replaced by student code
     }
-    	
+
+   /**
+    * public static int log2(int x)
+    *
+    * Returns log in base 2 of x
+    */
+    public static int log2(int x) {
+        return (int) (Math.log(x) / Math.log(2));
+    }
+
     /**
     * public int[] countersRep()
     *
@@ -92,8 +101,20 @@ public class FibonacciHeap
     */
     public int[] countersRep()
     {
-    	int[] arr = new int[100];
-        return arr; //	 to be replaced by student code
+        if (this.isEmpty()){
+            return new int[0];
+        }
+
+    	int[] arr = new int[log2(this.size)];
+        arr[this.first.getKey()]++;
+    	HeapNode curr = this.first.getNext();
+
+    	while (curr != this.first){
+            arr[curr.getKey()]++;
+            curr = curr.getNext();
+        }
+
+        return arr;
     }
 	
    /**
@@ -197,7 +218,7 @@ public class FibonacciHeap
        public int getKey() {
            return this.key;
        }
-       public int getRank() {return rank;};
+       public int getRank() {return this.rank;};
        public boolean isMarked(){ return this.marked;}
        public HeapNode getChild(){ return this.child;}
        public HeapNode getNext(){ return this.next;}
