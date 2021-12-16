@@ -106,15 +106,24 @@ public class FibonacciHeap
         }
 
     	int[] arr = new int[log2(this.size)];
-        arr[this.first.getKey()]++;
+        int maxRank = this.first.getRank();
+
+        arr[this.first.getRank()]++;
     	HeapNode curr = this.first.getNext();
 
     	while (curr != this.first){
-            arr[curr.getKey()]++;
+    	    if (curr.getRank() > maxRank){
+    	        maxRank = curr.getRank();
+            }
+            arr[curr.getRank()]++;
             curr = curr.getNext();
         }
 
-        return arr;
+        int[] res = new int[maxRank + 1];
+    	for (int i = 0; i < res.length; i++){
+    	    res[i] = arr[i];
+        }
+    	return res;
     }
 	
    /**
