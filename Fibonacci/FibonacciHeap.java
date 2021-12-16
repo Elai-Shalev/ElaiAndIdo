@@ -192,8 +192,17 @@ public class FibonacciHeap
         int[] arr = new int[100];
         return arr; // should be replaced by student code
     }
-    
-   /**
+
+    /**
+     * public void Consolidate()
+     *
+     * Performed after DeleteMin(). Iterates over current tree list and consolidates to make a new list
+     */
+    public void Consolidate(){
+
+    }
+
+    /**
     * public class HeapNode
     * 
     * If you wish to implement classes other than FibonacciHeap
@@ -218,12 +227,27 @@ public class FibonacciHeap
        public int getKey() {
            return this.key;
        }
+
        public int getRank() {return this.rank;};
+
        public boolean isMarked(){ return this.marked;}
+
        public HeapNode getChild(){ return this.child;}
+
        public HeapNode getNext(){ return this.next;}
+
        public HeapNode getPrev(){ return this.prev;}
+
        public HeapNode getParent(){ return this.parent;}
 
+       public void linkLeft(HeapNode node){
+           node.parent = this;
+           node.next = this.child;
+           this.child.prev.next = node;
+           node.prev = this.child.prev;
+           this.child.prev = node;
+           this.child = node;
+           this.rank++;
+       }
    }
 }
