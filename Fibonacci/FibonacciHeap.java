@@ -199,7 +199,65 @@ public class FibonacciHeap
      * Performed after DeleteMin(). Iterates over current tree list and consolidates to make a new list
      */
     public void Consolidate(){
+        if (!this.isEmpty()){
+            HeapNode[] arr = new HeapNode[log2(this.size)];
+            HeapNode right = null;
+            HeapNode left = null;
 
+            HeapNode curr = this.first;
+            arr[curr.getKey()] = curr;
+            curr = curr.getNext();
+
+            HeapNode next;
+
+            while(curr != this.first){
+                if (arr[curr.getKey()] == null){
+                    arr[curr.getKey()] = curr;
+                    curr = curr.getNext();
+                }
+                else{
+                    next = curr.getNext();
+                    HeapNode newTree = this.link(curr, arr[curr.getKey()]);
+                    arr[curr.getKey()] = null;
+                    if (right == null){
+                        right = newTree;
+                        left = newTree;
+                    }
+                    else{
+                        right.next = newTree;
+                        newTree.prev = right;
+                        right = newTree;
+                    }
+                    curr = next;
+                }
+            }
+
+            for (int i = arr.length - 1; i >=0; i--){
+                arr[i].next = left;
+                left.prev = arr[i];
+                left = arr[i];
+            }
+
+            right.next = left;
+            left.prev = right;
+            this.first = left;
+        }
+    }
+
+    /**
+     * public void link()
+     *
+     * Links 2 nodes by making the maxmimum of the two, the left child of the minimum. Uses linkLeft func of HeapNode
+     */
+    public HeapNode link(HeapNode a, HeapNode b){
+        this.totalLinks++;
+
+        if (a.getKey() > b.getKey()){
+            b.linkLeft(a);
+            return b;
+        }
+        a.linkLeft(b);
+        return a;
     }
 
     /**
