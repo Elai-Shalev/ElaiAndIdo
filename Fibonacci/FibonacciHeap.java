@@ -14,6 +14,7 @@ public class FibonacciHeap
     public int totalCuts;
     public int totalLinks;
 
+
    /**
     * public boolean isEmpty()
     *
@@ -34,8 +35,28 @@ public class FibonacciHeap
     * Returns the newly created node.
     */
     public HeapNode insert(int key)
-    {    
-    	return new HeapNode(key); // should be replaced by student code
+    {
+
+        HeapNode newNode = new HeapNode(key);
+        if(isEmpty()){
+            min = newNode;
+            first = newNode;
+            newNode.next = newNode;
+            newNode.prev = newNode;
+        }
+        else {
+            //5 pointer updates
+            newNode.prev = first.prev;
+            first.prev.next = newNode;
+            newNode.next = first;
+            first.prev = newNode;
+            first = newNode;
+            //is new minimum?
+            if (key < min.key) {
+                min = newNode;
+            }
+        }
+        return newNode;
     }
 
    /**
@@ -58,7 +79,8 @@ public class FibonacciHeap
     */
     public HeapNode findMin()
     {
-    	return new HeapNode(678);// should be replaced by student code
+        if(isEmpty()) { return null;}
+        return min;
     } 
     
    /**
