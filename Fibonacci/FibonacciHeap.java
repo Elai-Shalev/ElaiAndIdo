@@ -113,6 +113,23 @@ public class FibonacciHeap
         this.size = this.size + heap2.size;
     }
 
+    /**inserts a tree from the left to the first layer
+    ** after cut() is called
+     * //*/
+
+    public void InsertTreefromLeft(HeapNode x){
+        //update pointers
+        first.prev.next = x;
+        x.prev = first.prev;
+        first.prev = x;
+        x.next = first;
+        //check new minimum
+        if(x.key<min.key){
+            min = x;
+        }
+        totalTrees++;
+    }
+
    /**
     * public int size()
     *
@@ -186,8 +203,52 @@ public class FibonacciHeap
     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
     */
     public void decreaseKey(HeapNode x, int delta)
-    {    
+    {
+        //decrease
+        x.key = x.key-delta;
+
+        //handle violation - assert x isnt root.
+        if(x.parent!=null && x.key < x.getParent().key){
+            //case1: parent of x is unmarked
+            if(!x.parent.marked) {
+                if (x.parent.parent != null) { //parent isn't root
+                    x.parent.marked = true;
+                    marked++;
+                }
+                cut(x); //cut off x between its parent and siblings
+                InsertTreefromLeft(x);
+            }
+            //case2: parent of x is marked
+            else{
+
+            }
+        }
+
+
+
     	return; // should be replaced by student code
+    }
+
+    public void cut(HeapNode x){
+        HeapNode parent = x.parent;
+        //detaching from parent
+        if(parent.child == x){
+            if(x.next == x){
+                parent.child =null;
+            }
+            else {
+                parent.child = x.next;
+            }
+        }
+        x.parent = null;
+        //detaching from siblings
+        x.next.prev = x.prev;
+        x.prev.next = x.next;
+
+        totalCuts++;
+    }
+    public void cascadingCut(HeapNode x) {
+
     }
 
    /**
