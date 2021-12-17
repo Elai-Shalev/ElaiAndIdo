@@ -13,6 +13,7 @@ public class FibonacciHeap
     public int marked;
     public int totalCuts;
     public int totalLinks;
+    public int totalTrees;
 
 
    /**
@@ -42,7 +43,6 @@ public class FibonacciHeap
             first = newNode;
             newNode.next = newNode;
             newNode.prev = newNode;
-            totalLinks+=2;
         }
         else {
             //5 pointer updates
@@ -57,6 +57,8 @@ public class FibonacciHeap
             }
         }
         size++;
+        totalTrees++;
+        //totalLinks++; ?? is this a link
         return newNode;
     }
 
@@ -105,6 +107,7 @@ public class FibonacciHeap
             min = heap2.min;
         }
         totalLinks++;
+        totalTrees+= heap2.totalTrees;
         this.size = this.size + heap2.size;
     }
 
@@ -196,8 +199,7 @@ public class FibonacciHeap
     */
     public int potential() 
     {
-        return
-    	return -234; // should be replaced by student code
+        return this.totalTrees + 2*this.marked;
     }
 
    /**
