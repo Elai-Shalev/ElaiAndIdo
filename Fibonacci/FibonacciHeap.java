@@ -42,6 +42,7 @@ public class FibonacciHeap
             first = newNode;
             newNode.next = newNode;
             newNode.prev = newNode;
+            totalLinks+=2;
         }
         else {
             //5 pointer updates
@@ -103,6 +104,7 @@ public class FibonacciHeap
         if(min.key < heap2.min.key){
             min = heap2.min;
         }
+        totalLinks++;
         this.size = this.size + heap2.size;
     }
 
@@ -193,7 +195,8 @@ public class FibonacciHeap
     * plus twice the number of marked nodes in the heap. 
     */
     public int potential() 
-    {    
+    {
+        return
     	return -234; // should be replaced by student code
     }
 
