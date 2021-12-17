@@ -91,7 +91,19 @@ public class FibonacciHeap
     */
     public void meld (FibonacciHeap heap2)
     {
-    	  return; // should be replaced by student code   		
+        if(isEmpty()){
+            this.first = heap2.first;
+            this.min = heap2.min;
+        }
+        else{
+            HeapNode last = first.prev;
+            last.next = heap2.first;
+            heap2.first.prev = last;
+        }
+        if(min.key < heap2.min.key){
+            min = heap2.min;
+        }
+        this.size = this.size + heap2.size;
     }
 
    /**
