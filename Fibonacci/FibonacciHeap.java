@@ -106,7 +106,7 @@ public class FibonacciHeap
         if(min.key < heap2.min.key){
             min = heap2.min;
         }
-        totalLinks++;
+
         totalTrees+= heap2.totalTrees;
         this.size = this.size + heap2.size;
     }
