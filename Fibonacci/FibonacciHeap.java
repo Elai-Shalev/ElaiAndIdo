@@ -70,8 +70,49 @@ public class FibonacciHeap
     */
     public void deleteMin()
     {
-     	return; // should be replaced by student code
-     	
+     	if (totalTrees == 0){
+     	    return;
+        }
+
+        // Disconnect children from parent
+     	HeapNode curr = min.child;
+        do{
+            curr.parent = null;
+            curr = curr.getNext();
+        }
+        while (curr != min.child);
+
+     	// Insert children to list
+        if (totalTrees > 1){
+            min.child.prev.next = min.next;
+            min.next.prev = min.child.prev;
+
+            min.child.prev = min.prev;
+            min.prev.next = min.child;
+        }
+
+     	// Change first if necessary
+        if (min == first){
+            first = min.child;
+        }
+
+     	min.child = null;
+
+        // Find new min
+        HeapNode newMin = first;
+        curr = first;
+        do{
+            if (curr.getKey() < newMin.getKey()){
+                newMin = curr;
+            }
+            curr = curr.getNext();
+        }
+        while (curr != first);
+
+        this.min = newMin;
+
+        // Consolidate
+        this.Consolidate();
     }
 
    /**
