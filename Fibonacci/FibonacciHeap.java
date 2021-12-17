@@ -305,14 +305,13 @@ public class FibonacciHeap
                 cascadingCut(x);
             }
         }
-
-    	return; // should be replaced by student code
     }
 
     public void cut(HeapNode x){
         HeapNode parent = x.parent;
         //un-marking current parent
         parent.marked = false;
+        marked--;
         //detaching from parent
         if(parent.child == x){
             if(x.next == x){
