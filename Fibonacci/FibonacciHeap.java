@@ -100,6 +100,8 @@ public class FibonacciHeap
         }
         else{
             HeapNode last = first.prev;
+            first.prev = heap2.first.prev;
+            first.prev.next = first;
             last.next = heap2.first;
             heap2.first.prev = last;
         }
@@ -212,7 +214,7 @@ public class FibonacciHeap
     */
     public static int totalLinks()
     {    
-    	return -345; // should be replaced by student code
+    	return -345;
     }
 
    /**
