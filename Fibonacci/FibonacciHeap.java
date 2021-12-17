@@ -207,7 +207,7 @@ public class FibonacciHeap
         //decrease
         x.key = x.key-delta;
 
-        //handle violation - assert x isnt root.
+        //handle violation - assert x isn't root.
         if(x.parent!=null && x.key < x.getParent().key){
             //case1: parent of x is unmarked
             if(!x.parent.marked) {
@@ -220,11 +220,9 @@ public class FibonacciHeap
             }
             //case2: parent of x is marked
             else{
-
+                //NOT DONE
             }
         }
-
-
 
     	return; // should be replaced by student code
     }
