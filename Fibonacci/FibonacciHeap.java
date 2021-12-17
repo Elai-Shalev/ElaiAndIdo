@@ -171,6 +171,26 @@ public class FibonacciHeap
         totalTrees++;
     }
 
+    /**
+     * inserts a chain of nodes in the right order
+     * after cut is called in cascading context
+     *
+     */
+    public void InsertChainFromLeft(HeapNode x, HeapNode chainMin, int chainLength){
+
+        HeapNode heaplast = this.first.prev;
+        HeapNode chainlast = x.prev;
+        heaplast.next = x;
+        x.prev = heaplast;
+        first.prev = chainlast;
+        chainlast.next = first;
+        first = x;
+        if(chainMin.key < this.min.key){
+            this.min = chainMin;
+        }
+        totalTrees += chainLength;
+    }
+
    /**
     * public int size()
     *
@@ -261,7 +281,7 @@ public class FibonacciHeap
             }
             //case2: parent of x is marked
             else{
-                //NOT DONE
+                cascadingCut(x);
             }
         }
 
@@ -270,6 +290,8 @@ public class FibonacciHeap
 
     public void cut(HeapNode x){
         HeapNode parent = x.parent;
+        //unmarking parent
+        parent.marked = false;
         //detaching from parent
         if(parent.child == x){
             if(x.next == x){
@@ -286,8 +308,32 @@ public class FibonacciHeap
 
         totalCuts++;
     }
+
     public void cascadingCut(HeapNode x) {
 
+        HeapNode chainHead = x;
+        HeapNode chainLast = x;
+        HeapNode chainMin = x;
+        HeapNode parent = x.parent;
+        int chainLength =0;
+        while(parent.isMarked()){ //there are cuts to be performed
+            cut(x);
+            //update chain
+            chainLast.next = x;
+            x.next = chainHead;
+            chainHead.prev = x;
+            x.prev = chainLast;
+            chainLast = x;
+            if(x.key < chainMin.key){
+                chainMin = x;
+            }
+            chainLength++;
+            //move up
+            parent = parent.parent;
+            x = parent;
+        }
+        //after chain is done
+        InsertChainFromLeft(chainHead, chainMin, chainLength);
     }
 
    /**
