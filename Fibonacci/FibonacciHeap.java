@@ -128,15 +128,24 @@ public class FibonacciHeap
         }
 
     	int[] arr = new int[log2(this.size)];
-        arr[this.first.getKey()]++;
+        int maxRank = this.first.getRank();
+
+        arr[this.first.getRank()]++;
     	HeapNode curr = this.first.getNext();
 
     	while (curr != this.first){
-            arr[curr.getKey()]++;
+    	    if (curr.getRank() > maxRank){
+    	        maxRank = curr.getRank();
+            }
+            arr[curr.getRank()]++;
             curr = curr.getNext();
         }
 
-        return arr;
+        int[] res = new int[maxRank + 1];
+    	for (int i = 0; i < res.length; i++){
+    	    res[i] = arr[i];
+        }
+    	return res;
     }
 	
    /**
@@ -211,8 +220,37 @@ public class FibonacciHeap
     */
     public static int[] kMin(FibonacciHeap H, int k)
     {    
-        int[] arr = new int[100];
-        return arr; // should be replaced by student code
+        if (k == 0){
+            return new int[0];
+        }
+
+        int[] result = new int[k];
+
+        // Define binary heap to keep track of next minimum
+        BinaryHeap binHeap = new BinaryHeap();
+
+        // Insert the minimum of H for it should be the first in result array
+        binHeap.insert(H.min);
+        HeapNode curr;
+
+        // Insert k smallest elements
+        for (int i = 0; i < k; i++){
+            // Get next minimum from binary heap and inser to result
+            curr = binHeap.deleteMin();
+            result[i] = curr.getKey();
+
+            // Insert the minimum's children to the binary heap
+            HeapNode child = curr.getChild();
+            if (child != null){
+                do{
+                    binHeap.insert(child);
+                    child = child.getNext();
+                }
+                while (child != curr.getChild());
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -280,6 +318,82 @@ public class FibonacciHeap
         }
         a.linkLeft(b);
         return a;
+    }
+
+    /**
+     * public static class BinaryHeap
+     */
+
+    public static class BinaryHeap {
+        public HeapNode[] arr = new HeapNode[2];
+        public int size = 0;
+
+        public void insert(HeapNode k){
+            this.size++;
+            this.arr[this.size] = k;
+            this.HeapifyUp(this.size);
+            this.checkAndDouble();
+        }
+
+        public HeapNode getMin(){
+            return this.arr[1];
+        }
+
+        public HeapNode deleteMin(){
+            HeapNode min = this.arr[1];
+            this.arr[1] = this.arr[size];
+            this.size--;
+            this.HeapifyDown(1);
+            return min;
+        }
+
+        public void HeapifyUp(int i){
+            while (i > 1 & this.arr[i / 2].getKey() > this.arr[i].getKey()){
+                this.SwitchIdxs(i / 2, i);
+                i = i / 2;
+            }
+        }
+
+        public void HeapifyDown(int i){
+            while ((i * 2 < size && this.arr[i * 2].getKey() < this.arr[i].getKey()) ||
+                   (i * 2 + 1 < size && this.arr[i * 2 + 1].getKey() < this.arr[i].getKey())){
+                if (i * 2 < size && i * 2 + 1 < size){
+                    int smallest = Math.min(this.arr[i * 2].getKey(), this.arr[i * 2 + 1].getKey());
+                    if (this.arr[i * 2].getKey() == smallest){
+                        this.SwitchIdxs(i * 2, i);
+                        i = i * 2;
+                    }
+                    else{
+                        this.SwitchIdxs(i * 2 + 1, i);
+                        i = i * 2 + 1;
+                    }
+                }
+                else if (i * 2 < size){
+                    this.SwitchIdxs(i * 2, i);
+                    i = i * 2;
+                }
+                else{
+                    this.SwitchIdxs(i * 2 + 1, i);
+                    i = i * 2 + 1;
+                }
+            }
+        }
+
+        public void SwitchIdxs(int i, int j){
+            HeapNode temp = this.arr[i];
+            this.arr[i] = this.arr[j];
+            this.arr[j] = temp;
+        }
+
+        public void checkAndDouble(){
+            if (this.size + 1 == this.arr.length){
+                HeapNode[] newArr = new HeapNode[this.arr.length * 2];
+                for (int i = 1; i <= size; i++){
+                    newArr[i] = arr[i];
+                }
+                this.arr = newArr;
+            }
+        }
     }
 
     /**

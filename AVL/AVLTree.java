@@ -1,3 +1,5 @@
+package AVL;
+
 /**
  * Student 1:
  * Name: Ido Meshulam
@@ -867,6 +869,14 @@ public class AVLTree {
 		}
 
 		return numOps;
+	}
+
+	public static void print2D(IAVLNode t){
+
+	}
+
+	public static void print2DUtil(IAVLNode n, int k){
+
 	}
 
 	/** 
