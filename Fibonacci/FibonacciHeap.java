@@ -422,7 +422,7 @@ public class FibonacciHeap
 
         // Insert k smallest elements
         for (int i = 0; i < k; i++){
-            // Get next minimum from binary heap and inser to result
+            // Get next minimum from binary heap and insert to result
             curr = binHeap.deleteMin();
             result[i] = curr.getKey();
 
@@ -539,18 +539,30 @@ public class FibonacciHeap
         }
 
         public void HeapifyUp(int i){
-            while (i > 1 & this.arr[i / 2].getKey() > this.arr[i].getKey()){
-                this.SwitchIdxs(i / 2, i);
-                i = i / 2;
+            if (size > 1){
+                while (i > 1 && this.arr[i / 2].getKey() > this.arr[i].getKey()){
+                    this.SwitchIdxs(i / 2, i);
+                    i = i / 2;
+                }
             }
         }
 
         public void HeapifyDown(int i){
-            while ((i * 2 < size && this.arr[i * 2].getKey() < this.arr[i].getKey()) ||
-                   (i * 2 + 1 < size && this.arr[i * 2 + 1].getKey() < this.arr[i].getKey())){
-                if (i * 2 < size && i * 2 + 1 < size){
-                    int smallest = Math.min(this.arr[i * 2].getKey(), this.arr[i * 2 + 1].getKey());
-                    if (this.arr[i * 2].getKey() == smallest){
+            if (size > 1){
+                while ((i * 2 < size && this.arr[i * 2].getKey() < this.arr[i].getKey()) ||
+                        (i * 2 + 1 < size && this.arr[i * 2 + 1].getKey() < this.arr[i].getKey())){
+                    if (i * 2 < size && i * 2 + 1 < size){
+                        int smallest = Math.min(this.arr[i * 2].getKey(), this.arr[i * 2 + 1].getKey());
+                        if (this.arr[i * 2].getKey() == smallest){
+                            this.SwitchIdxs(i * 2, i);
+                            i = i * 2;
+                        }
+                        else{
+                            this.SwitchIdxs(i * 2 + 1, i);
+                            i = i * 2 + 1;
+                        }
+                    }
+                    else if (i * 2 < size){
                         this.SwitchIdxs(i * 2, i);
                         i = i * 2;
                     }
@@ -558,14 +570,6 @@ public class FibonacciHeap
                         this.SwitchIdxs(i * 2 + 1, i);
                         i = i * 2 + 1;
                     }
-                }
-                else if (i * 2 < size){
-                    this.SwitchIdxs(i * 2, i);
-                    i = i * 2;
-                }
-                else{
-                    this.SwitchIdxs(i * 2 + 1, i);
-                    i = i * 2 + 1;
                 }
             }
         }
