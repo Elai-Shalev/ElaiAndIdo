@@ -36,7 +36,6 @@ public class FibonacciHeap
     */
     public HeapNode insert(int key)
     {
-
         HeapNode newNode = new HeapNode(key);
         if(isEmpty()){
             min = newNode;
@@ -56,6 +55,7 @@ public class FibonacciHeap
                 min = newNode;
             }
         }
+        size++;
         return newNode;
     }
 
