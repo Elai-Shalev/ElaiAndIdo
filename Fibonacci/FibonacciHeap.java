@@ -76,43 +76,65 @@ public class FibonacciHeap
 
         // Disconnect children from parent
      	HeapNode curr = min.child;
-        do{
-            curr.parent = null;
-            curr = curr.getNext();
+     	if (min.child != null){
+            do{
+                this.totalTrees++;
+                curr.parent = null;
+                curr = curr.getNext();
+            }
+            while (curr != min.child);
+
+            // Insert children to list
+            if (totalTrees > 1){
+                min.child.prev.next = min.next;
+                min.next.prev = min.child.prev;
+
+                min.child.prev = min.prev;
+                min.prev.next = min.child;
+            }
+
+            // Change first if necessary
+            if (min == first){
+                first = min.child;
+            }
         }
-        while (curr != min.child);
+     	else{
+     	    min.prev.next = min.next;
+     	    min.next.prev = min.prev;
 
-     	// Insert children to list
-        if (totalTrees > 1){
-            min.child.prev.next = min.next;
-            min.next.prev = min.child.prev;
-
-            min.child.prev = min.prev;
-            min.prev.next = min.child;
-        }
-
-     	// Change first if necessary
-        if (min == first){
-            first = min.child;
+            // Change first if necessary
+            if (min == first){
+                first = min.next;
+            }
         }
 
      	min.child = null;
 
-        // Find new min
-        HeapNode newMin = first;
-        curr = first;
-        do{
-            if (curr.getKey() < newMin.getKey()){
-                newMin = curr;
+     	// Decrease size of heap and num trees
+     	this.size--;
+     	this.totalTrees--;
+
+        if (this.size > 0){
+            // Find new min
+            HeapNode newMin = first;
+            curr = first;
+            do{
+                if (curr.getKey() < newMin.getKey()){
+                    newMin = curr;
+                }
+                curr = curr.getNext();
             }
-            curr = curr.getNext();
+            while (curr != first);
+
+            this.min = newMin;
+
+            // Consolidate
+            this.Consolidate();
         }
-        while (curr != first);
-
-        this.min = newMin;
-
-        // Consolidate
-        this.Consolidate();
+        else{
+            min = null;
+            first = null;
+        }
     }
 
    /**
@@ -224,7 +246,7 @@ public class FibonacciHeap
             return new int[0];
         }
 
-    	int[] arr = new int[log2(this.size)];
+    	int[] arr = new int[log2(this.size) + 1];
         int maxRank = this.first.getRank();
 
         arr[this.first.getRank()]++;
@@ -425,47 +447,50 @@ public class FibonacciHeap
      */
     public void Consolidate(){
         if (!this.isEmpty()){
-            HeapNode[] arr = new HeapNode[log2(this.size)];
+            HeapNode[] arr = new HeapNode[log2(this.size)+1];
             HeapNode right = null;
             HeapNode left = null;
 
             HeapNode curr = this.first;
-            arr[curr.getKey()] = curr;
+            arr[curr.getRank()] = curr;
             curr = curr.getNext();
 
             HeapNode next;
+            HeapNode newTree;
 
             while(curr != this.first){
-                if (arr[curr.getKey()] == null){
-                    arr[curr.getKey()] = curr;
-                    curr = curr.getNext();
-                }
-                else{
-                    next = curr.getNext();
-                    HeapNode newTree = this.link(curr, arr[curr.getKey()]);
-                    arr[curr.getKey()] = null;
-                    if (right == null){
-                        right = newTree;
-                        left = newTree;
+                next = curr.getNext();
+                if (arr[curr.getRank()] != null){
+                    newTree = curr;
+                    while(newTree.getRank() < arr.length && arr[newTree.getRank()] != null){
+                        newTree = this.link(newTree, arr[newTree.getRank()]);
+                        arr[newTree.getRank()-1] = null;
                     }
-                    else{
-                        right.next = newTree;
-                        newTree.prev = right;
-                        right = newTree;
-                    }
+                    arr[newTree.getRank()] = newTree;
                     curr = next;
                 }
+                else{
+                    arr[curr.getRank()] = curr;
+                    curr = curr.getNext();
+                }
             }
 
-            for (int i = arr.length - 1; i >=0; i--){
-                arr[i].next = left;
-                left.prev = arr[i];
-                left = arr[i];
+            first = null;
+            for (int i = 0; i < arr.length; i++){
+                if (arr[i] != null){
+                    if (first == null){
+                        first = arr[i];
+                        first.prev = first;
+                        first.next = first;
+                    }
+                    else{
+                        first.prev.next=arr[i];
+                        arr[i].prev = first.prev;
+                        arr[i].next = first;
+                        first.prev = arr[i];
+                    }
+                }
             }
-
-            right.next = left;
-            left.prev = right;
-            this.first = left;
         }
     }
 
@@ -476,6 +501,7 @@ public class FibonacciHeap
      */
     public HeapNode link(HeapNode a, HeapNode b){
         this.totalLinks++;
+        this.totalTrees--;
 
         if (a.getKey() > b.getKey()){
             b.linkLeft(a);
@@ -601,10 +627,16 @@ public class FibonacciHeap
 
        public void linkLeft(HeapNode node){
            node.parent = this;
-           node.next = this.child;
-           this.child.prev.next = node;
-           node.prev = this.child.prev;
-           this.child.prev = node;
+           if (this.child != null){
+               node.next = this.child;
+               this.child.prev.next = node;
+               node.prev = this.child.prev;
+               this.child.prev = node;
+           }
+           else{
+               node.next = node;
+               node.prev = node;
+           }
            this.child = node;
            this.rank++;
        }
