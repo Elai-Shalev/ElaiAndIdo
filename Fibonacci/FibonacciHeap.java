@@ -11,8 +11,8 @@ public class FibonacciHeap
     public HeapNode min;
     public HeapNode first;
     public int marked;
-    public int totalCuts;
-    public int totalLinks;
+    public static int totalCuts;
+    public static int totalLinks;
     public int totalTrees;
 
 
@@ -58,7 +58,6 @@ public class FibonacciHeap
         }
         size++;
         totalTrees++;
-        //totalLinks++; ?? is this a link
         return newNode;
     }
 
@@ -382,7 +381,7 @@ public class FibonacciHeap
     */
     public static int totalLinks()
     {    
-    	return -345;
+    	return totalLinks;
     }
 
    /**
@@ -394,7 +393,7 @@ public class FibonacciHeap
     */
     public static int totalCuts()
     {    
-    	return -456; // should be replaced by student code
+    	return totalCuts;
     }
 
      /**
