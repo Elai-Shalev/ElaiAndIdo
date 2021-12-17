@@ -199,7 +199,7 @@ public class FibonacciHeap
     */
     public int size()
     {
-    	return -123; // should be replaced by student code
+    	return this.size;
     }
 
    /**
