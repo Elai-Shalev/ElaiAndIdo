@@ -275,22 +275,34 @@ public class FibonacciHeap
     */
     public void delete(HeapNode x) 
     {    
-    	return; // should be replaced by student code
+    	this.decreaseKeyInternal(x, 0, true);
+        this.min = x;
+        this.deleteMin();
     }
 
-   /**
-    * public void decreaseKey(HeapNode x, int delta)
-    *
-    * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
-    * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
-    */
-    public void decreaseKey(HeapNode x, int delta)
+    /**
+     * public void decreaseKey(HeapNode x, int delta)
+     *
+     * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
+     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
+     */
+    private void decreaseKey(HeapNode x, int delta){
+        this.decreaseKeyInternal(x, delta, false);
+    }
+
+    /**
+     * private void decreaseKeyInternal(HeapNode x, int delta, boolean isInternal)
+     *
+     * Used by decreaseKey() with boolean value false to indicate regular decreaseKey as studied
+     * When used by delete() operates with boolean value true in order to always cut it from the tree
+     */
+    private void decreaseKeyInternal(HeapNode x, int delta, boolean isInternal)
     {
         //decrease
         x.key = x.key-delta;
 
         //handle violation - assert x isn't root.
-        if(x.parent!=null && x.key < x.getParent().key){
+        if(isInternal || (x.parent!=null && x.key < x.getParent().key)){
             //case1: parent of x is unmarked
             if(!x.parent.marked) {
                 if (x.parent.parent != null) { //parent isn't root
