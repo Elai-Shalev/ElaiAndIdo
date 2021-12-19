@@ -286,7 +286,7 @@ public class FibonacciHeap
      * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
      * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
      */
-    private void decreaseKey(HeapNode x, int delta){
+    public void decreaseKey(HeapNode x, int delta){
         this.decreaseKeyInternal(x, delta, false);
     }
 
@@ -306,8 +306,10 @@ public class FibonacciHeap
             //case1: parent of x is unmarked
             if(!x.parent.marked) {
                 if (x.parent.parent != null) { //parent isn't root
+                    if(!x.parent.isMarked()){
+                        marked++;
+                    }
                     x.parent.marked = true;
-                    marked++;
                 }
                 cut(x); //cut off x between its parent and siblings
                 InsertTreefromLeft(x);
@@ -350,6 +352,9 @@ public class FibonacciHeap
         HeapNode chainLast = x;
         HeapNode chainMin = x;
         HeapNode parent = x.parent;
+        if(x.key < chainMin.key){
+            chainMin = x;
+        }
         int chainLength =0;
         while(parent.isMarked()){ //there are cuts to be performed
             cut(x);
@@ -359,9 +364,6 @@ public class FibonacciHeap
             chainHead.prev = x;
             x.prev = chainLast;
             chainLast = x;
-            if(x.key < chainMin.key){
-                chainMin = x;
-            }
             chainLength++;
             //move up
             parent = parent.parent;
