@@ -302,7 +302,7 @@ public class FibonacciHeap
         x.key = x.key-delta;
 
         //handle violation - assert x isn't root.
-        if(isInternal || (x.parent!=null && x.key < x.getParent().key)){
+        if(x.parent!=null && (isInternal || x.key < x.getParent().key)){
             //case1: parent of x is unmarked
             if(!x.parent.marked) {
                 if (x.parent.parent != null) { //parent isn't root
