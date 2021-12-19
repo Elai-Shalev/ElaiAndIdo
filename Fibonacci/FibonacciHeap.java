@@ -310,8 +310,11 @@ public class FibonacciHeap
     public void cut(HeapNode x){
         HeapNode parent = x.parent;
         //un-marking current parent
+
+        if(parent.isMarked()) {
+            marked--;
+        }
         parent.marked = false;
-        marked--;
         //detaching from parent
         if(parent.child == x){
             if(x.next == x){
