@@ -185,10 +185,7 @@ public class FibonacciHeap
         x.prev = first.prev;
         first.prev = x;
         x.next = first;
-        //check new minimum
-        if(x.key<min.key){
-            min = x;
-        }
+        first =x;
         totalTrees++;
     }
 
