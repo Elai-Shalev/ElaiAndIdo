@@ -197,7 +197,7 @@ public class FibonacciHeap
      * after cut is called in cascading context
      *
      */
-    public void InsertChainFromLeft(HeapNode x, HeapNode chainMin, int chainLength){
+    public void InsertChainFromLeft(HeapNode x, int chainLength){
 
         HeapNode heaplast = this.first.prev;
         HeapNode chainlast = x.prev;
@@ -206,9 +206,7 @@ public class FibonacciHeap
         first.prev = chainlast;
         chainlast.next = first;
         first = x;
-        if(chainMin.key < this.min.key){
-            this.min = chainMin;
-        }
+
         totalTrees += chainLength;
     }
 
@@ -300,13 +298,16 @@ public class FibonacciHeap
     {
         //decrease
         x.key = x.key-delta;
+        if(x.key < min.key){
+            min = x;
+        }
 
         //handle violation - assert x isn't root.
-        if(x.parent!=null && (isInternal || x.key < x.getParent().key)){
+        if(x.parent!=null && (isInternal || x.key < x.getParent().key)) {
             //case1: parent of x is unmarked
-            if(!x.parent.marked) {
+            if (!x.parent.marked) {
                 if (x.parent.parent != null) { //parent isn't root
-                    if(!x.parent.isMarked()){
+                    if (!x.parent.isMarked()) {
                         marked++;
                     }
                     x.parent.marked = true;
@@ -315,10 +316,11 @@ public class FibonacciHeap
                 InsertTreefromLeft(x);
             }
             //case2: parent of x is marked
-            else{
+            else {
                 cascadingCut(x);
             }
         }
+
     }
 
     public void cut(HeapNode x){
@@ -350,11 +352,7 @@ public class FibonacciHeap
 
         HeapNode chainHead = x;
         HeapNode chainLast = x;
-        HeapNode chainMin = x;
         HeapNode parent = x.parent;
-        if(x.key < chainMin.key){
-            chainMin = x;
-        }
         int chainLength =0;
         while(parent.isMarked()){ //there are cuts to be performed
             cut(x);
@@ -370,7 +368,7 @@ public class FibonacciHeap
             x = parent;
         }
         //after chain is done
-        InsertChainFromLeft(chainHead, chainMin, chainLength);
+        InsertChainFromLeft(chainHead, chainLength);
     }
 
    /**

@@ -378,7 +378,7 @@ public class Test {
         addKeysReverse(9000);
 
         ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>();
-
+        HeapPrinter.print(fibonacciHeap,false);
         for (int i = 2000; i < 3000; i++) {
             heap.insert(i);
             nodes.add(fibonacciHeap.insert(i));
@@ -392,6 +392,7 @@ public class Test {
             heap.delete(i);
             fibonacciHeap.delete(nodes.get(i - 2000));
         }
+        HeapPrinter.print(fibonacciHeap,false);
 
         while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
@@ -401,6 +402,7 @@ public class Test {
             heap.deleteMin();
             fibonacciHeap.deleteMin();
         }
+        HeapPrinter.print(fibonacciHeap,false);
         if (!fibonacciHeap.isEmpty())
             bugFound(test);
     }
@@ -484,6 +486,7 @@ public class Test {
         addKeys(1000);
         FibonacciHeap.HeapNode h = fibonacciHeap.insert(9999);
         fibonacciHeap.decreaseKey(h, 9999);
+
 
         if (0 != fibonacciHeap.findMin().getKey()) {
             bugFound(test);
