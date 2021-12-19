@@ -307,10 +307,8 @@ public class FibonacciHeap
             //case1: parent of x is unmarked
             if (!x.parent.marked) {
                 if (x.parent.parent != null) { //parent isn't root
-                    if (!x.parent.isMarked()) {
-                        marked++;
-                    }
                     x.parent.marked = true;
+                    marked++;
                 }
                 cut(x); //cut off x between its parent and siblings
                 InsertTreefromLeft(x);
@@ -327,10 +325,14 @@ public class FibonacciHeap
         HeapNode parent = x.parent;
         //un-marking current parent
 
+        /*
         if(parent.isMarked()) {
             marked--;
         }
         parent.marked = false;
+
+         */
+
         //detaching from parent
         if(parent.child == x){
             if(x.next == x){
@@ -344,7 +346,6 @@ public class FibonacciHeap
         //detaching from siblings
         x.next.prev = x.prev;
         x.prev.next = x.next;
-
         totalCuts++;
     }
 
@@ -354,8 +355,9 @@ public class FibonacciHeap
         HeapNode chainLast = x;
         HeapNode parent = x.parent;
         int chainLength =0;
-        while(parent.isMarked()){ //there are cuts to be performed
+        while(parent!=null && (parent.isMarked() || parent.parent == null)){ //there are cuts to be performed
             cut(x);
+            parent.marked = false;
             //update chain
             chainLast.next = x;
             x.next = chainHead;
@@ -366,6 +368,10 @@ public class FibonacciHeap
             //move up
             parent = parent.parent;
             x = parent;
+        }
+        if(x.parent != null){
+            x.marked = true;
+            marked++;
         }
         //after chain is done
         InsertChainFromLeft(chainHead, chainLength);
