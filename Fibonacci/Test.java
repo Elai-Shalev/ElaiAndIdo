@@ -355,6 +355,9 @@ public class Test {
                 return;
             }
             heap.delete(i);
+            if (i == 2040){
+                int x = 1;
+            }
             fibonacciHeap.delete(nodes.get(i - 2000));
         }
 

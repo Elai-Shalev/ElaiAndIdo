@@ -467,7 +467,7 @@ public class FibonacciHeap
      */
     public void Consolidate(){
         if (!this.isEmpty()){
-            HeapNode[] arr = new HeapNode[log2(this.size)+1];
+            HeapNode[] arr = new HeapNode[2*log2(this.size)+1];
             HeapNode right = null;
             HeapNode left = null;
 
