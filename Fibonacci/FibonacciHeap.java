@@ -84,12 +84,21 @@ public class FibonacciHeap
             while (curr != min.child);
 
             // Insert children to list
-            if (totalTrees > 1){
-                min.child.prev.next = min.next;
-                min.next.prev = min.child.prev;
+            if (min.next != min){
+                if (min.child.next == min.child){
+                    min.prev.next = min.child;
+                    min.child.prev = min.prev;
 
-                min.child.prev = min.prev;
-                min.prev.next = min.child;
+                    min.next.prev = min.child;
+                    min.child.next = min.next;
+                }
+                else {
+                    min.child.prev.next = min.next;
+                    min.next.prev = min.child.prev;
+
+                    min.child.prev = min.prev;
+                    min.prev.next = min.child;
+                }
             }
 
             // Change first if necessary
