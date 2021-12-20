@@ -328,7 +328,13 @@ public class FibonacciHeap
     }
 
     public void cut(HeapNode x){
+        if (x.marked){
+            x.marked = false;
+            this.marked--;
+        }
+
         HeapNode parent = x.parent;
+        parent.rank--;
 
         //detaching from parent
         if(parent.child == x){
@@ -351,14 +357,14 @@ public class FibonacciHeap
         HeapNode chainHead = x;
         HeapNode chainLast = x;
         HeapNode parent = x.parent;
-        x.marked = true;
-        marked++;
+        if (!x.marked){
+            x.marked = true;
+            marked++;
+        }
 
         int chainLength =0;
         while(x.isMarked()){ //there are cuts to be performed
             cut(x);
-            x.marked = false;
-            marked--;
             //update chain
             chainLast.next = x;
             x.next = chainHead;
