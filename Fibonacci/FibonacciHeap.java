@@ -20,7 +20,8 @@ public class FibonacciHeap
     * public boolean isEmpty()
     *
     * Returns true if and only if the heap is empty.
-    *   
+    *
+    * Time Complexity: O(1)
     */
     public boolean isEmpty()
     {
@@ -34,30 +35,43 @@ public class FibonacciHeap
     * The added key is assumed not to already belong to the heap.  
     * 
     * Returns the newly created node.
+    *
+    * Time Complexity: O(1)
     */
     public HeapNode insert(int key)
     {
+        // Create new HeapNode with requested key
         HeapNode newNode = new HeapNode(key);
+        // If heap is empty, set the min and first nodes of the heap as the new Node.
+        // Also set node as its next and prev to maintain cyclic list property
         if(isEmpty()){
             min = newNode;
             first = newNode;
             newNode.next = newNode;
             newNode.prev = newNode;
         }
+        // Else heap is not empty
         else {
-            //5 pointer updates
+            // Set pointers to insert node as leftmost node. After insert, first = new Node
             newNode.prev = first.prev;
             first.prev.next = newNode;
             newNode.next = first;
             first.prev = newNode;
             first = newNode;
-            //is new minimum?
+
+            // If key is smaller than min's key then the new Node is the new heap minimum
             if (key < min.key) {
                 min = newNode;
             }
         }
+
+        // Increase size by 1 because a new node was added
         size++;
+
+        // Increase number of trees by 1 because every new node is inserted as a new tree of degree 0
         totalTrees++;
+
+        // return pointer to the newly created node
         return newNode;
     }
 
@@ -65,17 +79,25 @@ public class FibonacciHeap
     * public void deleteMin()
     *
     * Deletes the node containing the minimum key.
+    * After Deletion, Consolidate forest with method Consolidate()
     *
+    * Time Complexity: O(log(n)) Amortized, O(n) Worst-Case
     */
     public void deleteMin()
     {
-     	if (totalTrees == 0){
+     	// If heap is empty, do nothing and return because there is no Min to delete
+        if (this.isEmpty()){
      	    return;
         }
 
-        // Disconnect children from parent
+        // Else heap is not empty. Min will be deleted
+        // Create new pointer curr to iterate over min's children. Begin with curr = min.child
      	HeapNode curr = min.child;
+
+        // If Min node as children
      	if (min.child != null){
+     	    // For every child, set its parent as null because it will be inserted as root of a new tree
+            // In accordance with above, increase tree size by 1
             do{
                 this.totalTrees++;
                 curr.parent = null;
@@ -84,7 +106,9 @@ public class FibonacciHeap
             while (curr != min.child);
 
             // Insert children to list
+            // If Min is not the only tree root in the heap
             if (min.next != min){
+                // If min has only 1 child, Insert it between Min's prev and next
                 if (min.child.next == min.child){
                     min.prev.next = min.child;
                     min.child.prev = min.prev;
@@ -92,6 +116,7 @@ public class FibonacciHeap
                     min.next.prev = min.child;
                     min.child.next = min.next;
                 }
+                // Else min has more than 1 child. Insert them between Min's prev and next
                 else {
                     min.child.prev.next = min.next;
                     min.next.prev = min.child.prev;
@@ -101,32 +126,41 @@ public class FibonacciHeap
                 }
             }
 
-            // Change first if necessary
+            // If min was the first node in heap, set Min's leftmost child as first
             if (min == first){
                 first = min.child;
             }
         }
+     	// Else Min has no children
      	else{
+     	    // Connect Min's prev and next together so Min is no longer between them
      	    min.prev.next = min.next;
      	    min.next.prev = min.prev;
 
-            // Change first if necessary
+            // If min was the first node in heap, set Min's next neighbour as first
             if (min == first){
                 first = min.next;
             }
         }
 
+     	// Set Min's child as null to disconnect it from its children
      	min.child = null;
 
-     	// Decrease size of heap and num trees
+     	// Decrease size of heap by 1 because the Min node was deleted
      	this.size--;
+
+     	// Decrease number of trees by 1 because the tree containing the Min was deleted
      	this.totalTrees--;
 
-        if (this.size > 0){
-            // Find new min
+        // If heap is not empty
+     	if (!this.isEmpty()){
+            // Find the new Minimum because the old one was deleted
+            // Temporarily set the first node as the new Minimum
             HeapNode newMin = first;
             curr = first;
+            // Iterate over all nodes in list
             do{
+                // If current node key is smaller than newMin key, set current node as newMin
                 if (curr.getKey() < newMin.getKey()){
                     newMin = curr;
                 }
@@ -134,11 +168,13 @@ public class FibonacciHeap
             }
             while (curr != first);
 
+            // After iterating over list, newMin now holds the correct Min node of the tree. Set it as min
             this.min = newMin;
 
-            // Consolidate
+            // Consolidate list to iteratively link trees of same degree to decrease forest size
             this.Consolidate();
         }
+     	// Else min is empty. Set min and first as null
         else{
             min = null;
             first = null;
@@ -150,9 +186,11 @@ public class FibonacciHeap
     *
     * Returns the node of the heap whose key is minimal, or null if the heap is empty.
     *
+    * Time Complexity: O(1)
     */
     public HeapNode findMin()
     {
+        // If tree is empty return null. Else return the minimum node of the tree, saved in min
         if(isEmpty()) { return null;}
         return min;
     } 
@@ -162,39 +200,61 @@ public class FibonacciHeap
     *
     * Melds heap2 with the current heap.
     *
+    * Time Complexity: O(1)
     */
     public void meld (FibonacciHeap heap2)
     {
+        // If heap2 is empty, do nothing and return. Forest will be unchanged
+        if (heap2.isEmpty()){
+            return;
+        }
+
+        // Else heap2 is not empty
+        // Add heap2 totalTrees and marked to this heap's field values
+        this.totalTrees += heap2.totalTrees;
+        this.marked += heap2.marked;
+
+        // If heap is empty, change this heap's min, first and size to be the same as heap2, and return
         if(isEmpty()){
             this.first = heap2.first;
             this.min = heap2.min;
+            this.size = heap2.size;
+            return;
         }
-        else{
-            HeapNode last = first.prev;
-            first.prev = heap2.first.prev;
-            first.prev.next = first;
-            last.next = heap2.first;
-            heap2.first.prev = last;
-        }
+
+        // Else both heaps are not empty
+        // Add heap2 size this heap's field values
+        this.size += heap2.size;
+
+        // Connect heap2 list at the end of this heap (this heap's last node with heap2 first node)
+        HeapNode last = first.prev;
+        first.prev = heap2.first.prev;
+        first.prev.next = first;
+        last.next = heap2.first;
+        heap2.first.prev = last;
+
+        // Choose the min of the Unified heap from the 2 previous min's of the melded heaps
         if(min.key < heap2.min.key){
             min = heap2.min;
         }
-
-        totalTrees+= heap2.totalTrees;
-        this.size = this.size + heap2.size;
     }
 
-    /**inserts a tree from the left to the first layer
-    ** after cut() is called
-     * //*/
-
+    /**
+     * public void InsertTreefromLeft(HeapNode x)
+     *
+     * inserts a node x as a root of a new tree to the left of the list, after it is cut from a tree by cut() method
+     *
+     * Time Complexity: O(1)
+     */
     public void InsertTreefromLeft(HeapNode x){
-        //update pointers
+        // Update pointers to set x as the first node of the forest list
         first.prev.next = x;
         x.prev = first.prev;
         first.prev = x;
         x.next = first;
-        first =x;
+        first = x;
+
+        // Increase number of trees by 1 because x was added as a new tree to the forest
         totalTrees++;
     }
 
