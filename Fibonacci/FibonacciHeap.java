@@ -374,7 +374,7 @@ public class FibonacciHeap
         // Set x as if it is the minimum node, so as to be deleted by deleteMin()
         this.min = x;
         // Delete the "minimum node" (actually x) from the tree.
-        // After deletion, deleteMin() will also find the "new" actual min after
+        // After deletion, deleteMin() will also find the "new" actual min
         this.deleteMin();
     }
 
@@ -465,35 +465,53 @@ public class FibonacciHeap
         totalCuts++;
     }
 
-    public void cascadingCut(HeapNode x) {
+    /**
+     * public void cascadingCut(HeapNode x)
+     *
+     * Iteratively cuts node from x and all of its marked ancestors
+     * After cutting all marked in path to root, marks the unmarked parent if its not a root
+     * Lastly, callls InsertChainFromLeft() to insert the formed sub-list to the left of the forest list
+     *
+     * Time Complexity: O(Number of Cuts)
+     */
+    public void cascadingCut(HeapNode x){
 
+        // Create new chain Head and Last that will later be inserted to the left of the list by InsertChainFromLeft()
         HeapNode chainHead = x;
         HeapNode chainLast = x;
         HeapNode parent = x.parent;
+        // If x is unmarked, mark it and increase marked by 1
         if (!x.marked){
             x.marked = true;
             marked++;
         }
 
         int chainLength =0;
+        // While current node (x) is marked
         while(x.isMarked()){ //there are cuts to be performed
+            // Cut current node (x)
             cut(x);
-            //update chain
+            // Update chain - insert current node at the end of the chain
             chainLast.next = x;
             x.next = chainHead;
             chainHead.prev = x;
             x.prev = chainLast;
             chainLast = x;
             chainLength++;
-            //move up
+
+            // Update current node (x) and its parent to traverse up the tree
             x = parent;
             parent = x.parent;
         }
+
+        // Here current node is no longer marked, so no more cutting is to be made
+        // If current node is not a root, i.e. its parent != null, mark it and increase number of marked nodes
         if(parent != null){
             x.marked = true;
             marked++;
         }
-        //after chain is done
+
+        // After cascading-cut is complete, insert the assembled chain to the left of the forest list
         InsertChainFromLeft(chainHead, chainLength);
     }
 
@@ -504,7 +522,9 @@ public class FibonacciHeap
     * Potential = #trees + 2*#marked
     * 
     * In words: The potential equals to the number of trees in the heap
-    * plus twice the number of marked nodes in the heap. 
+    * plus twice the number of marked nodes in the heap.
+    *
+    * Time Complexity: O(1)
     */
     public int potential() 
     {
@@ -518,6 +538,8 @@ public class FibonacciHeap
     * run-time of the program. A link operation is the operation which gets as input two
     * trees of the same rank, and generates a tree of rank bigger by one, by hanging the
     * tree which has larger value in its root under the other tree.
+    *
+    * Time Complexity: O(1)
     */
     public static int totalLinks()
     {    
@@ -529,7 +551,9 @@ public class FibonacciHeap
     *
     * This static function returns the total number of cut operations made during the
     * run-time of the program. A cut operation is the operation which disconnects a subtree
-    * from its parent (during decreaseKey/delete methods). 
+    * from its parent (during decreaseKey/delete methods).
+    *
+    * Time Complexity: O(1)
     */
     public static int totalCuts()
     {    
