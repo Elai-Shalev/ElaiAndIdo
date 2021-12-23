@@ -259,20 +259,26 @@ public class FibonacciHeap
     }
 
     /**
-     * inserts a chain of nodes in the right order
-     * after cut is called in cascading context
+     * public void InsertChainFromLeft(HeapNode x, int chainLength)
      *
+     * inserts a chain of nodes in the right order after cascading cut
+     *
+     * Time Complexity: O(1)
      */
     public void InsertChainFromLeft(HeapNode x, int chainLength){
 
+        // Connect the end of the chain starting from x, to the beginning of the current tree list - first
         HeapNode heaplast = this.first.prev;
         HeapNode chainlast = x.prev;
         heaplast.next = x;
         x.prev = heaplast;
         first.prev = chainlast;
         chainlast.next = first;
+
+        // Set x as the new first node
         first = x;
 
+        // Add length of added chain to the total number of trees
         totalTrees += chainLength;
     }
 
@@ -280,7 +286,8 @@ public class FibonacciHeap
     * public int size()
     *
     * Returns the number of elements in the heap.
-    *   
+    *
+    * Time Complexity: O(1)
     */
     public int size()
     {
@@ -291,6 +298,8 @@ public class FibonacciHeap
     * public static int log2(int x)
     *
     * Returns log in base 2 of x
+    *
+    * Time Complexity: O(1)
     */
     public static int log2(int x) {
         return (int) (Math.log(x) / Math.log(2));
@@ -301,32 +310,52 @@ public class FibonacciHeap
     *
     * Return an array of counters. The i-th entry contains the number of trees of order i in the heap.
     * Note: The size of of the array depends on the maximum order of a tree, and an empty heap returns an empty array.
-    * 
+    *
+    * Time Complexity: O(Number of Trees), Worst Case: O(n)
     */
     public int[] countersRep()
     {
+        // If tree is empty return empty array
         if (this.isEmpty()){
             return new int[0];
         }
 
-    	int[] arr = new int[log2(this.size) + 1];
+        // Else tree is not empty
+        // Initialize array, arr, with size of maximum possible rank
+        // In a Fibonacci Heap, maxRank <= log_phi(size) ~ 1.44*log2(size) < 2 * log2(size) + 1
+    	int[] arr = new int[2*log2(this.size)+1];
+
+        // Set maxRank as rank of first node. When iterating through list will be changed the true maximum Rank
         int maxRank = this.first.getRank();
 
+        // Add 1 tree of the first's rank to the array
         arr[this.first.getRank()]++;
+
+        // Declare pointer curr to next node of first
     	HeapNode curr = this.first.getNext();
 
+    	// While there are still nodes in the list, i.e. current node is not the first node
     	while (curr != this.first){
+    	    // If current rank is bigger than maxRank, set maxRank as current rank
     	    if (curr.getRank() > maxRank){
     	        maxRank = curr.getRank();
             }
+            // Add 1 tree of the current rank to the array
             arr[curr.getRank()]++;
+
+    	    // Move curr pointer to next node
             curr = curr.getNext();
         }
 
+    	// Initialize result array, res, with size of true maximum rank + 1 (because the ranks start from 0)
         int[] res = new int[maxRank + 1];
+
+    	// Copy arr into res
     	for (int i = 0; i < res.length; i++){
     	    res[i] = arr[i];
         }
+
+    	// Return result
     	return res;
     }
 	
@@ -336,11 +365,16 @@ public class FibonacciHeap
     * Deletes the node x from the heap.
 	* It is assumed that x indeed belongs to the heap.
     *
+    * Time Complexity: O(log(n)) Amortized, O(n) Worst-Case (Same as deleteMin())
     */
     public void delete(HeapNode x) 
     {    
-    	this.decreaseKeyInternal(x, 0, true);
+    	// Call decreaseKeyInternal with boolean value true, to cut x from tree regardless of the key difference
+        this.decreaseKeyInternal(x, 0, true);
+        // Set x as if it is the minimum node, so as to be deleted by deleteMin()
         this.min = x;
+        // Delete the "minimum node" (actually x) from the tree.
+        // After deletion, deleteMin() will also find the "new" actual min after
         this.deleteMin();
     }
 
@@ -349,6 +383,8 @@ public class FibonacciHeap
      *
      * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
      * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
+     *
+     * Time Complexity: O(Number of Cuts), Amortized: O(1)
      */
     public void decreaseKey(HeapNode x, int delta){
         this.decreaseKeyInternal(x, delta, false);
@@ -359,6 +395,8 @@ public class FibonacciHeap
      *
      * Used by decreaseKey() with boolean value false to indicate regular decreaseKey as studied
      * When used by delete() operates with boolean value true in order to always cut it from the tree
+     *
+     * Time Complexity: O(Number of Cuts), Amortized: O(1)
      */
     private void decreaseKeyInternal(HeapNode x, int delta, boolean isInternal)
     {
@@ -387,28 +425,43 @@ public class FibonacciHeap
 
     }
 
+    /**
+     * public void cut(HeapNode x)
+     *
+     * Cuts node x from its parent
+     *
+     * Time Complexity: O(1)
+     */
     public void cut(HeapNode x){
+        // If node is marked, unmark it and decrease number of marked nodes
         if (x.marked){
             x.marked = false;
             this.marked--;
         }
 
+        // Decrease parent rank by 1, because we are cutting one of its children (Rank = Number of children)
         HeapNode parent = x.parent;
         parent.rank--;
 
-        //detaching from parent
+        // If x is the leftmost child of its parent
         if(parent.child == x){
+            // If x is the only child, set the parent's child as null, since it now has no children
             if(x.next == x){
                 parent.child =null;
             }
+            // Else x's parent has more children. Set its leftmost child as the next node after x
             else {
                 parent.child = x.next;
             }
         }
+        // Set x's parent as null since it will become a new root
         x.parent = null;
-        //detaching from siblings
+
+        // Connect the neighboring nodes of x, x's prev and x's next, together
         x.next.prev = x.prev;
         x.prev.next = x.next;
+
+        // Increase number of cuts by 1, because we made a new cut
         totalCuts++;
     }
 
