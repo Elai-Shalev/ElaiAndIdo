@@ -321,7 +321,7 @@ public class FibonacciHeap
         }
 
         // Else tree is not empty
-        // Initialize array, arr, with size of maximum possible rank
+        // Initialize array, arr, with size of maximum possible rank + 1
         // In a Fibonacci Heap, maxRank <= log_phi(size) ~ 1.44*log2(size) < 2 * log2(size) + 1
     	int[] arr = new int[2*log2(this.size)+1];
 
@@ -365,7 +365,7 @@ public class FibonacciHeap
     * Deletes the node x from the heap.
 	* It is assumed that x indeed belongs to the heap.
     *
-    * Time Complexity: O(log(n)) Amortized, O(n) Worst-Case (Same as deleteMin())
+    * Time Complexity: Amortized: O(log(n)), Worst-Case: O(n) (Same as deleteMin())
     */
     public void delete(HeapNode x) 
     {    
@@ -566,14 +566,19 @@ public class FibonacciHeap
     * This static function returns the k smallest elements in a Fibonacci heap that contains a single tree.
     * The function should run in O(k*deg(H)). (deg(H) is the degree of the only tree in H.)
     *  
-    * ###CRITICAL### : you are NOT allowed to change H. 
+    * ###CRITICAL### : you are NOT allowed to change H.
+    *
+    * Time Complexity: O(k*deg(H))
     */
     public static int[] kMin(FibonacciHeap H, int k)
     {    
+        // If k is 0, return empty list
         if (k == 0){
             return new int[0];
         }
 
+        // Else k is not 0
+        // Initialize new result array of length k
         int[] result = new int[k];
 
         // Define binary heap to keep track of next minimum
@@ -607,46 +612,71 @@ public class FibonacciHeap
      * public void Consolidate()
      *
      * Performed after DeleteMin(). Iterates over current tree list and consolidates to make a new list
+     *
+     * Time Complexity: O(Number of Trees). Worst Case: O(n)
      */
     public void Consolidate(){
+        // If tree is not empty
         if (!this.isEmpty()){
+            // Initialize bucket array arr, with size of the maximum possible rank + 1
+            // In a Fibonacci Heap, maxRank <= log_phi(size) ~ 1.44*log2(size) < 2 * log2(size) + 1
             HeapNode[] arr = new HeapNode[2*log2(this.size)+1];
-            HeapNode right = null;
-            HeapNode left = null;
 
+            // Initialize pointer curr to start with first node in forest
             HeapNode curr = this.first;
+            // Insert curr to cell of index rank(curr) in bucket array
             arr[curr.getRank()] = curr;
+            // Move pointer from first to next node
             curr = curr.getNext();
 
+            // Initialize pointer next. Will be used as next node in list, so pointer doesn't "get lost" during link
             HeapNode next;
+            // Initialize newTree pointer. Will be used for iterative linking
             HeapNode newTree;
 
+            // While there are still nodes in the list, i.e. current node is not the first node
             while(curr != this.first){
+                // Set next as the node after current node
                 next = curr.getNext();
+                // If cell of index rank(current) is already occupied in array
                 if (arr[curr.getRank()] != null){
+                    // Set newTree as current tree to be linked to the tree of same rank already in bucket array
                     newTree = curr;
+                    // While cell of index rank(current) is already occupied in array
                     while(newTree.getRank() < arr.length && arr[newTree.getRank()] != null){
+                        // Link newTree with tree of same rank
                         newTree = this.link(newTree, arr[newTree.getRank()]);
+                        // Set the index of the previously connected tree as null, to vacant the cell for future trees
                         arr[newTree.getRank()-1] = null;
                     }
+                    // Here there is no longer a tree of the same rank as newTree. Insert it in bucket array
                     arr[newTree.getRank()] = newTree;
-                    curr = next;
                 }
+                // Else cell of index rank(current) is NOT occupied in array
                 else{
+                    // Insert current node into bucket array
                     arr[curr.getRank()] = curr;
-                    curr = curr.getNext();
                 }
+                // Move to next node in forest
+                curr = next;
             }
 
+            // Move trees from bucket array to the forest list
+            // Set first as default null
             first = null;
+            // For every cell in bucket array
             for (int i = 0; i < arr.length; i++){
+                // If cell is not empty
                 if (arr[i] != null){
+                    // If first is null, then set the tree in the current cell, which of smallest degree, as first
                     if (first == null){
                         first = arr[i];
                         first.prev = first;
                         first.next = first;
                     }
+                    // Else first is not null
                     else{
+                        // Insert tree in current cell to the right of the forest list
                         first.prev.next=arr[i];
                         arr[i].prev = first.prev;
                         arr[i].next = first;
@@ -661,27 +691,57 @@ public class FibonacciHeap
      * public void link()
      *
      * Links 2 nodes by making the maxmimum of the two, the left child of the minimum. Uses linkLeft func of HeapNode
+     *
+     * Time Complexity: O(1)
      */
     public HeapNode link(HeapNode a, HeapNode b){
+        // Increase total links by 1
         this.totalLinks++;
+        // Decrease total trees by 1, since we are linking 2 trees into 1
         this.totalTrees--;
 
+        // If a's key is bigger than b's
         if (a.getKey() > b.getKey()){
+            // b should be the new root of the linked tree. Link a as the leftmost child of b
             b.linkLeft(a);
+            // Return b, the new root of the linked tree
             return b;
         }
+        // Else b's key is bigger than a's
+        // a should be the new root of the linked tree. Link b as the leftmost child of a
         a.linkLeft(b);
+        // Return a, the new root of the linked tree
         return a;
     }
 
     /**
      * public static class BinaryHeap
+     *
+     * An implementation of a binary heap, similar to the implementation taught in Data Structures course.
+     * The BinaryHeap will be used in the implementation of function kMin()
+     *
+     * To allow for a unbounded number of consecutive insert operations, array size is doubled when full
+     * This behaviour maintains the amortized cost of insert to be O(log(n))
      */
 
     public static class BinaryHeap {
+        // Initialize new array, representing the heap. Default size is 2 since cell of index 0 is never used
         public HeapNode[] arr = new HeapNode[2];
+        // Initialize Binary Heap Size as 0
         public int size = 0;
 
+        /**
+         * public void insert(HeapNode k)
+         *
+         * Inserts k into heap directly after the last element, and Heapifies it up the heap
+         * Calls checkAndDouble() to double array size if necessary
+         *
+         * Time Complexity: Worse case: O(Binary Heap Size), Amortized: O(log(Binary Heap Size))
+         *
+         * It is important to note that the insert operations will only be performed by kMin() function, which will
+         * perform at most n insert operations starting from an empty Binary Heap, when n = size of fibonacci heap.
+         * Therefore the worse case cost over a series of at most n insert operations is O(n * log(Binary Heap Size))
+         */
         public void insert(HeapNode k){
             this.size++;
             this.arr[this.size] = k;
@@ -689,10 +749,25 @@ public class FibonacciHeap
             this.checkAndDouble();
         }
 
+        /**
+         * public HeapNode getMin()
+         *
+         * Returns minimum node in BinaryHeap
+         *
+         * Time Complexity: O(1)
+         */
         public HeapNode getMin(){
             return this.arr[1];
         }
 
+        /**
+         * public HeapNode deleteMin()
+         *
+         * Replaces the first element with the last element and deletes the last element (now the minimum)
+         * Lastly heapifies down the last element which was moved to the first index, and returns the old minimum
+         *
+         * Time Complexity: O(log(Binary Heap Size))
+         */
         public HeapNode deleteMin(){
             HeapNode min = this.arr[1];
             this.arr[1] = this.arr[size];
@@ -701,6 +776,13 @@ public class FibonacciHeap
             return min;
         }
 
+        /**
+         * public void HeapifyUp(int i)
+         *
+         * Heapifies up node in index i until its key is larger than its parent
+         *
+         * Time Complexity: O(log(Binary Heap Size))
+         */
         public void HeapifyUp(int i){
             if (size > 1){
                 while (i > 1 && this.arr[i / 2].getKey() > this.arr[i].getKey()){
@@ -710,6 +792,13 @@ public class FibonacciHeap
             }
         }
 
+        /**
+         * public void HeapifyDown(int i)
+         *
+         * Heapifies down node in index i until its key is smaller than its children, if exist
+         *
+         * Time Complexity: O(log(Binary Heap Size))
+         */
         public void HeapifyDown(int i){
             if (size > 1){
                 while ((i * 2 < size && this.arr[i * 2].getKey() < this.arr[i].getKey()) ||
@@ -737,18 +826,36 @@ public class FibonacciHeap
             }
         }
 
+        /**
+         * public void SwitchIdxs(int i, int j)
+         *
+         * Switches nodes in indexes i and j in the heap
+         *
+         * Time Complexity: O(1)
+         */
         public void SwitchIdxs(int i, int j){
             HeapNode temp = this.arr[i];
             this.arr[i] = this.arr[j];
             this.arr[j] = temp;
         }
 
+        /**
+         * public void checkAndDouble()
+         *
+         * Checks if the array is full, and if so doubles the size of the array
+         *
+         * Time Complexity: O(Binary Heap Size)
+         */
         public void checkAndDouble(){
+            // If array is full
             if (this.size + 1 == this.arr.length){
+                // Initialize new array double the size of the current array
                 HeapNode[] newArr = new HeapNode[this.arr.length * 2];
+                // Copy all elements to the new array
                 for (int i = 1; i <= size; i++){
                     newArr[i] = arr[i];
                 }
+                // Set new array of double the size as the heap array
                 this.arr = newArr;
             }
         }
@@ -759,7 +866,8 @@ public class FibonacciHeap
     * 
     * If you wish to implement classes other than FibonacciHeap
     * (for example HeapNode), do it in this file, not in another file. 
-    *  
+    *
+    * Class representing the node elements contained in a Fibonacci Heap
     */
     public static class HeapNode {
 
@@ -771,40 +879,92 @@ public class FibonacciHeap
        public HeapNode prev;
        public HeapNode parent;
 
-       //constructor
+      /**
+       * public HeapNode(int key)
+       * Constructor for a new Heapnode with requested key
+       * Time Complexity: O(1)
+       */
        public HeapNode(int key) {
            this.key = key;
        }
 
+      /**
+       * public int getKey()
+       * Returns key of node
+       * Time Complexity: O(1)
+       */
        public int getKey() {
            return this.key;
        }
 
+      /**
+       * public int getRank()
+       * Returns rank of node
+       * Time Complexity: O(1)
+       */
        public int getRank() {return this.rank;};
 
+      /**
+       * public boolean isMarked()
+       * Returns true if and only if node is marked
+       * Time Complexity: O(1)
+       */
        public boolean isMarked(){ return this.marked;}
 
+      /**
+       * public HeapNode getChild()
+       * Returns leftmost child of node
+       * Time Complexity: O(1)
+       */
        public HeapNode getChild(){ return this.child;}
 
+      /**
+       * public HeapNode getNext()
+       * Returns next sibling of this node
+       * Time Complexity: O(1)
+       */
        public HeapNode getNext(){ return this.next;}
 
+      /**
+       * public HeapNode getPrev()
+       * Returns previous sibling of this node
+       * Time Complexity: O(1)
+       */
        public HeapNode getPrev(){ return this.prev;}
 
+      /**
+       * public HeapNode getParent()
+       * Returns parent of node
+       * Time Complexity: O(1)
+       */
        public HeapNode getParent(){ return this.parent;}
 
+      /**
+       * public void linkLeft(HeapNode node)
+       * Links the given node as the leftmost child of this node
+       * Time Complexity: O(1)
+       */
        public void linkLeft(HeapNode node){
+           // Set this node as the parent of the given node
            node.parent = this;
+           // If this node already has children
            if (this.child != null){
+               // Connect node to its new siblings, while maintaining cyclic list property
                node.next = this.child;
                this.child.prev.next = node;
                node.prev = this.child.prev;
                this.child.prev = node;
            }
+           // Else this node has no children
            else{
+               // Then given node will be the first and only child of this node
+               // Set the given node as its own prev and next to maintain cyclic list property
                node.next = node;
                node.prev = node;
            }
+           // Set the given node as this node's leftmost child
            this.child = node;
+           // Increase node's rank by 1, since rank = Number of Children
            this.rank++;
        }
    }
