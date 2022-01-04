@@ -399,7 +399,7 @@ public class FibonacciHeap
      * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
      * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
      *
-     * Time Complexity: O(Number of Cuts), Amortized: O(1)
+     * Time Complexity: O(Number of Cuts), Worst Case: O(n). Amortized: O(1)
      */
     public void decreaseKey(HeapNode x, int delta){
         this.decreaseKeyInternal(x, delta, false);
@@ -411,7 +411,7 @@ public class FibonacciHeap
      * Used by decreaseKey() with boolean value false to indicate regular decreaseKey as studied
      * When used by delete() operates with boolean value true in order to always cut it from the tree
      *
-     * Time Complexity: O(Number of Cuts), Amortized: O(1)
+     * Time Complexity: O(Number of Cuts), Worst Case: O(n).  Amortized: O(1)
      */
     private void decreaseKeyInternal(HeapNode x, int delta, boolean isInternal)
     {
