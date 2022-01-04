@@ -27,6 +27,21 @@ public class FibonacciHeap
     {
     	return size == 0;
     }
+
+    /**
+     * private HeapNode insertForKMin(HeapNode node)
+     *
+     * Uses insert() to insert a new node with same key as given node.
+     * Updates KMinPointer of the newNode to point to the original node that was given to the function
+     * Used in KMin()
+     *
+     * Time Complexity: O(1)
+     */
+    private HeapNode insertForKMin(HeapNode node){
+        HeapNode newNode = this.insert(node.key);
+        newNode.KMinPointer = node;
+        return newNode;
+    }
 		
    /**
     * public HeapNode insert(int key)
@@ -582,27 +597,29 @@ public class FibonacciHeap
         int[] result = new int[k];
 
         // Define binary heap to keep track of next minimum
-        BinaryHeap binHeap = new BinaryHeap();
+        FibonacciHeap fibHeap = new FibonacciHeap();
 
         // Insert the minimum of H for it should be the first in result array
-        binHeap.insert(H.min);
+        fibHeap.insertForKMin(H.min);
         HeapNode curr;
 
         // Insert k smallest elements
         for (int i = 0; i < k; i++){
             // Get next minimum from binary heap and insert to result
-            curr = binHeap.deleteMin();
+            curr = fibHeap.min.KMinPointer;
             result[i] = curr.getKey();
 
             // Insert the minimum's children to the binary heap
             HeapNode child = curr.getChild();
             if (child != null){
                 do{
-                    binHeap.insert(child);
+                    fibHeap.insertForKMin(child);
                     child = child.getNext();
                 }
                 while (child != curr.getChild());
             }
+
+            fibHeap.deleteMin();
         }
 
         return result;
@@ -715,153 +732,6 @@ public class FibonacciHeap
     }
 
     /**
-     * public static class BinaryHeap
-     *
-     * An implementation of a binary heap, similar to the implementation taught in Data Structures course.
-     * The BinaryHeap will be used in the implementation of function kMin()
-     *
-     * To allow for a unbounded number of consecutive insert operations, array size is doubled when full
-     * This behaviour maintains the amortized cost of insert to be O(log(n))
-     */
-
-    public static class BinaryHeap {
-        // Initialize new array, representing the heap. Default size is 2 since cell of index 0 is never used
-        public HeapNode[] arr = new HeapNode[2];
-        // Initialize Binary Heap Size as 0
-        public int size = 0;
-
-        /**
-         * public void insert(HeapNode k)
-         *
-         * Inserts k into heap directly after the last element, and Heapifies it up the heap
-         * Calls checkAndDouble() to double array size if necessary
-         *
-         * Time Complexity: Worse case: O(Binary Heap Size), Amortized: O(log(Binary Heap Size))
-         *
-         * It is important to note that the insert operations will only be performed by kMin() function, which will
-         * perform at most n insert operations starting from an empty Binary Heap, when n = size of fibonacci heap.
-         * Therefore the worse case cost over a series of at most n insert operations is O(n * log(Binary Heap Size))
-         */
-        public void insert(HeapNode k){
-            this.size++;
-            this.arr[this.size] = k;
-            this.HeapifyUp(this.size);
-            this.checkAndDouble();
-        }
-
-        /**
-         * public HeapNode getMin()
-         *
-         * Returns minimum node in BinaryHeap
-         *
-         * Time Complexity: O(1)
-         */
-        public HeapNode getMin(){
-            return this.arr[1];
-        }
-
-        /**
-         * public HeapNode deleteMin()
-         *
-         * Replaces the first element with the last element and deletes the last element (now the minimum)
-         * Lastly heapifies down the last element which was moved to the first index, and returns the old minimum
-         *
-         * Time Complexity: O(log(Binary Heap Size))
-         */
-        public HeapNode deleteMin(){
-            HeapNode min = this.arr[1];
-            this.arr[1] = this.arr[size];
-            this.size--;
-            this.HeapifyDown(1);
-            return min;
-        }
-
-        /**
-         * public void HeapifyUp(int i)
-         *
-         * Heapifies up node in index i until its key is larger than its parent
-         *
-         * Time Complexity: O(log(Binary Heap Size))
-         */
-        public void HeapifyUp(int i){
-            if (size > 1){
-                while (i > 1 && this.arr[i / 2].getKey() > this.arr[i].getKey()){
-                    this.SwitchIdxs(i / 2, i);
-                    i = i / 2;
-                }
-            }
-        }
-
-        /**
-         * public void HeapifyDown(int i)
-         *
-         * Heapifies down node in index i until its key is smaller than its children, if exist
-         *
-         * Time Complexity: O(log(Binary Heap Size))
-         */
-        public void HeapifyDown(int i){
-            if (size > 1){
-                while ((i * 2 < size && this.arr[i * 2].getKey() < this.arr[i].getKey()) ||
-                        (i * 2 + 1 < size && this.arr[i * 2 + 1].getKey() < this.arr[i].getKey())){
-                    if (i * 2 < size && i * 2 + 1 < size){
-                        int smallest = Math.min(this.arr[i * 2].getKey(), this.arr[i * 2 + 1].getKey());
-                        if (this.arr[i * 2].getKey() == smallest){
-                            this.SwitchIdxs(i * 2, i);
-                            i = i * 2;
-                        }
-                        else{
-                            this.SwitchIdxs(i * 2 + 1, i);
-                            i = i * 2 + 1;
-                        }
-                    }
-                    else if (i * 2 < size){
-                        this.SwitchIdxs(i * 2, i);
-                        i = i * 2;
-                    }
-                    else{
-                        this.SwitchIdxs(i * 2 + 1, i);
-                        i = i * 2 + 1;
-                    }
-                }
-            }
-        }
-
-        /**
-         * public void SwitchIdxs(int i, int j)
-         *
-         * Switches nodes in indexes i and j in the heap
-         *
-         * Time Complexity: O(1)
-         */
-        public void SwitchIdxs(int i, int j){
-            HeapNode temp = this.arr[i];
-            this.arr[i] = this.arr[j];
-            this.arr[j] = temp;
-        }
-
-        /**
-         * public void checkAndDouble()
-         *
-         * Checks if the array is full, and if so doubles the size of the array
-         *
-         * Time Complexity: O(Binary Heap Size)
-         */
-        public void checkAndDouble(){
-            // If array is full
-            if (this.size + 1 == this.arr.length){
-                // Initialize new array double the size of the current array
-                HeapNode[] newArr = new HeapNode[this.arr.length * 2];
-                // Copy all elements to the new array
-                for (int i = 1; i <= size; i++){
-                    newArr[i] = arr[i];
-                }
-                // Set new array of double the size as the heap array
-                this.arr = newArr;
-            }
-        }
-    }
-
-    /**
     * public class HeapNode
     * 
     * If you wish to implement classes other than FibonacciHeap
@@ -878,6 +748,7 @@ public class FibonacciHeap
        public HeapNode next;
        public HeapNode prev;
        public HeapNode parent;
+       public HeapNode KMinPointer;
 
       /**
        * public HeapNode(int key)
