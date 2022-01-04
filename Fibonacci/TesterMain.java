@@ -75,28 +75,62 @@ public class TesterMain {
     }
 
     static void Question1(){
-        int power = 15;
-        int m = (int)Math.pow(2, power);
-        FibonacciHeap.HeapNode[] nodes = new FibonacciHeap.HeapNode[m+1];
+        for (int j=0; j <=0; j++){
+            int power = 20;
+            System.out.println("\n");
+            System.out.println("Power = " + power);
+            int m = (int)Math.pow(2, power);
+            FibonacciHeap.HeapNode[] nodes = new FibonacciHeap.HeapNode[m+1];
+            FibonacciHeap fHeap = new FibonacciHeap();
+
+            long start = System.currentTimeMillis();
+
+            for (int k = m-1; k >= -1; k--){
+                nodes[k+1] = fHeap.insert(k);
+            }
+
+            fHeap.deleteMin();
+            //HeapPrinter.print(fHeap, false);
+
+            for (int i = FibonacciHeap.log2(m); i >= 1; i--){
+                fHeap.decreaseKey(nodes[m-(int)Math.pow(2, i) + 2], m+1);
+            }
+
+            fHeap.decreaseKey(nodes[m-2+1], m+1);
+
+            //HeapPrinter.print(fHeap, false);
+
+            long finish = System.currentTimeMillis();
+            long timeElapsed = finish - start;
+
+            System.out.println("Elapsed Time = " + timeElapsed);
+            System.out.println("Total Links = " + FibonacciHeap.totalLinks());
+            System.out.println("Total Cuts = " + FibonacciHeap.totalCuts());
+            System.out.println("Potential = " + fHeap.potential());
+        }
+    }
+
+    static void Question2(){
+        int i = 6;
+        int m = (int)Math.pow(3, i) - 1;
         FibonacciHeap fHeap = new FibonacciHeap();
 
         long start = System.currentTimeMillis();
 
-        for (int k = m-1; k >= -1; k--){
-            nodes[k+1] = fHeap.insert(k);
+        for (int k = m; k >= 0; k--){
+            fHeap.insert(k);
         }
 
-        fHeap.deleteMin();
-        //HeapPrinter.print(fHeap, false);
-
-        for (int i = FibonacciHeap.log2(m); i >= 1; i--){
-            fHeap.decreaseKey(nodes[m-(int)Math.pow(2, i) + 2], m+1);
+        for (int k = 1; k <= 3*m/4; k++){
+            fHeap.deleteMin();
+            System.out.println("Delete " + k + " Total Links = " + FibonacciHeap.totalLinks());
         }
-
-        //HeapPrinter.print(fHeap, false);
 
         long finish = System.currentTimeMillis();
         long timeElapsed = finish - start;
+
+        System.out.println("m = " + m);
+        System.out.println("size = " + fHeap.size);
         System.out.println("Elapsed Time = " + timeElapsed);
         System.out.println("Total Links = " + FibonacciHeap.totalLinks());
         System.out.println("Total Cuts = " + FibonacciHeap.totalCuts());
@@ -104,7 +138,7 @@ public class TesterMain {
     }
 
     public static void main(String[] args){
-        Question1();
+        Question2();
 
 
 
