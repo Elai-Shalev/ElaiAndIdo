@@ -1,2 +1,2 @@
 # ElaiAndIdo
-Doing MADMAKH and crimes
+Hub for our creations, assignments, and imagination
